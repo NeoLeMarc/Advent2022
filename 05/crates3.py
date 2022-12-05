@@ -28,12 +28,9 @@ class Crate(object):
         oldpos = self.pos
 
         # Skip empty grates
-        if self.value == None and self.previousCrate == None:
+        if self.value == None:
             print("Empty container found")
-            pprint(self.__dict__)
             if self.nextCrate != None:
-                print("removing empty crate")
-                print(self.nextCrate)
                 self.nextCrate.move(target, count)
             else:
                 return
@@ -41,13 +38,14 @@ class Crate(object):
 
             moveContainer = self
             for i in range(1, count):
+                print(moveContainer.value)
                 print(i)
                 if moveContainer.nextCrate != None:
-                    print("moving to next container")
                     moveContainer = moveContainer.nextCrate
                     moveContainer.pos = target
+                else:
+                    print("no more containers")
 
-            print(moveContainer)
             print(moveContainer.value)
 
             # Unlink from next container 
@@ -119,6 +117,7 @@ with open("input.txt", "r") as infile:
             topCrates[i].append(value)
 
         print(line)
+    printCrates()
 
     # Now parse instructions
     for line in lines[10:]:
