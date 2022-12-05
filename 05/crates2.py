@@ -46,15 +46,14 @@ class Crate(object):
         if count < 0:
             return
 
-        print("%s: Moving %i to %i count %i" % (self.value, self.pos, target, count))
+        print("%s: Moving %i to %i count %i (%s)" % (self.value, self.pos, target, count, self))
         oldpos = self.pos
 
-#        if self.nextCrate.value == "J":
-#            print("!!!!!!! DEBUG !!!!!!")
-#            print("Start:")
-#            print(self)
-#            pprint(self.__dict__)
-#            pprint(topCrates)
+        print("!!!!!!! DEBUG !!!!!!")
+        print("Start:")
+        print(self)
+        pprint(self.__dict__)
+        pprint(topCrates)
 
 
         # Unlink from next and previous container 
@@ -72,6 +71,9 @@ class Crate(object):
         self.previousCrate = None
 
         # Now link the target top crate as next container
+        print("Target: " + str(target))
+        oldnext = self.nextCrate
+        oldnext.nextCrate = self.nextCrate # Maybe bufix
         self.nextCrate = topCrates[target]
 
         # Noe let us be the top container of the target
@@ -88,11 +90,15 @@ class Crate(object):
         if not topCrates[oldpos]:
             topCrates[oldpos] = Crate(oldpos, "", None, None)
 
-        #if self.nextCrate.value == "J":
-        #    print("End:")
-        #    print(self)
-        #    pprint(self.__dict__)
-        #    pprint(topCrates)
+        print("End:")
+        print(self)
+        pprint(self.__dict__)
+        print("Old next:")
+        if oldnext != None:
+            pprint(oldnext.__dict__)
+        else:
+            print("None")
+        pprint(topCrates)
 
     def getValues(self, seen):
         #if self.previousCrate == None:
@@ -107,11 +113,13 @@ class Crate(object):
 
         if self in seen:
             print("Circle information")
+            print(seen)
             pprint(topCrates)
             print("Culprit:")
             print(seen[-1])
             pprint(seen[-1].__dict__)
             print("Affected:")
+            print(self)
             pprint(self.__dict__)
             sys.stdout.flush()
             raise Exception("Error: circle found")
