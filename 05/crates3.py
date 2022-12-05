@@ -41,17 +41,20 @@ class Crate(object):
                 print(moveContainer.value)
                 print(i)
 
+                if moveContainer.nextCrate != None:
+                    moveContainer = moveContainer.nextCrate
+                    moveContainer.pos = target
+                else:
+                    print("no more containers")
+
                 ## Skip empty containers:
                 while moveContainer.value == None:
                     print("Skipping empty container")
                     moveContainer = moveContainer.nextCrate
                     moveContainer.pos = target
 
-                if moveContainer.nextCrate != None:
-                    moveContainer = moveContainer.nextCrate
-                    moveContainer.pos = target
-                else:
-                    print("no more containers")
+                if moveContainer.value == None:
+                    raise Exception("Empty container")
 
             print(moveContainer.value)
 
