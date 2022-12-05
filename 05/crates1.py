@@ -8,7 +8,7 @@ class Crate(object):
 
     def append(self, value):
         if self.nextCrate != None:
-            self.append(value)
+            self.nextCrate.append(value)
             print("crate: traversing")
         else:
             self.nextCrate = Crate(value, self, None)
