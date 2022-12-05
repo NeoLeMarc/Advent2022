@@ -40,6 +40,13 @@ class Crate(object):
             for i in range(1, count):
                 print(moveContainer.value)
                 print(i)
+
+                ## Skip empty containers:
+                while moveContainer.value == None:
+                    print("Skipping empty container")
+                    moveContainer = moveContainer.nextCrate
+                    moveContainer.pos = target
+
                 if moveContainer.nextCrate != None:
                     moveContainer = moveContainer.nextCrate
                     moveContainer.pos = target
