@@ -6,17 +6,23 @@ with open(filename, "r") as infile:
 
 
 def calculateScenicScore(x, y):
+    ownheight = int(lines[x][y])
+    print("Ownheight: %i" % ownheight)
     visible = []
     cvisible = 0
     # Left to right
     maxseen = -1 
     cvisible = 0
-    for j in range(y, len(lines[0])):
+    for j in range(y + 1, len(lines[0])):
         print("l: %s (m: %i)" % (lines[x][j], maxseen))
-        if int(lines[x][j]) > maxseen:
-            maxseen = int(lines[x][j])
-            visible.append((x, j)) 
-            cvisible += 1
+        maxseen = int(lines[x][j])
+        visible.append((x, j)) 
+        cvisible += 1
+ 
+        if int(lines[x][j]) >= ownheight:
+            # View blocked
+            break
+    print(cvisible)
     scenicA = cvisible
 
     print("------")
@@ -25,10 +31,14 @@ def calculateScenicScore(x, y):
     cvisible = 0
     for j in range(y - 1, -1, -1):
         print("l: %s (m: %i)" % (lines[x][j], maxseen))
-        if int(lines[x][j]) > maxseen:
-            maxseen = int(lines[x][j])
-            visible.append((x, j)) 
-            cvisible += 1
+        maxseen = int(lines[x][j])
+        visible.append((x, j)) 
+        cvisible += 1
+
+        if int(lines[x][j]) >= ownheight:
+            # blocked
+            break
+
     print(cvisible)
     scenicB = cvisible
 
@@ -39,10 +49,13 @@ def calculateScenicScore(x, y):
     cvisible = 0
     for i in range(x + 1, len(lines)):
         print("l: %s (m: %i)" % (lines[i][y], maxseen))
-        if int(lines[i][y]) > maxseen:
-            maxseen = int(lines[i][y])
-            visible.append((i, y)) 
-            cvisible += 1
+        maxseen = int(lines[i][y])
+        visible.append((i, y)) 
+        cvisible += 1
+ 
+        if int(lines[i][y]) >= ownheight:
+            # Blocked
+            break
     print(cvisible)
     scenicC = cvisible
 
@@ -54,10 +67,13 @@ def calculateScenicScore(x, y):
     for i in range(x - 1, -1, -1):
         print("l: %s (m: %i)" % (lines[i][y], maxseen))
         #print("(%i, %i)" % (i, j))
-        if int(lines[i][y]) > maxseen:
-            maxseen = int(lines[i][y])
-            visible.append((i, y)) 
-            cvisible += 1
+        maxseen = int(lines[i][y])
+        visible.append((i, y)) 
+        cvisible += 1
+ 
+        if int(lines[i][y]) >= ownheight:
+            # blocked
+            break
     print(cvisible)
     scenicD = cvisible
 
@@ -82,14 +98,14 @@ def calculateScenicScore(x, y):
         for j in range(0, len(lines)):
             if (i, j) == (x, y):
                 out += bcolors.BOLD + lines[i][j] + bcolors.ENDC
-            if (i, j) in visible:
+            elif (i, j) in visible:
                 out += bcolors.OKGREEN + lines[i][j] + bcolors.ENDC
             else:
                 out += bcolors.FAIL + lines[i][j] + bcolors.ENDC
         print(out)
 
     print(len(visible))
-    return scenicA + scenicB + scenicC + scenicD
+    return scenicA * scenicB * scenicC * scenicD
 
 
-calculateScenicScore(2, 2)
+print(calculateScenicScore(2, 2))
