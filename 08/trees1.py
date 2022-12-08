@@ -5,7 +5,7 @@ with open(filename, "r") as infile:
     lines = infile.read().splitlines()
 
 
-visible = 0
+visible = []
 # Left to right
 for i in range(0, len(lines)):
     maxseen = -1 
@@ -13,7 +13,7 @@ for i in range(0, len(lines)):
     for j in range(0, len(lines[i])):
         if int(lines[i][j]) > maxseen:
             maxseen = int(lines[i][j])
-            visible += 1
+            visible.append((i, j)) 
             cvisible += 1
     print(cvisible)
 
@@ -26,7 +26,7 @@ for i in range(0, len(lines)):
     for j in range(len(lines[i]) -1, -1, -1):
         if int(lines[i][j]) > maxseen:
             maxseen = int(lines[i][j])
-            visible += 1
+            visible.append((i, j)) 
             cvisible += 1
     print(cvisible)
 
@@ -40,7 +40,7 @@ for j in range(0, len(lines[i])):
         print("l: %s (m: %i)" % (lines[i][j], maxseen))
         if int(lines[i][j]) > maxseen:
             maxseen = int(lines[i][j])
-            visible += 1
+            visible.append((i, j)) 
             cvisible += 1
     print(cvisible)
 
@@ -56,7 +56,10 @@ for j in range(len(lines[i]) -1, -1, -1):
         #print("(%i, %i)" % (i, j))
         if int(lines[i][j]) > maxseen:
             maxseen = int(lines[i][j])
-            visible += 1
+            visible.append((i, j)) 
             cvisible += 1
     print(cvisible)
+
+visible = list(set(visible))
 print(visible)
+print(len(visible))
