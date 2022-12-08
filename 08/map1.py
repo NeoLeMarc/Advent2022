@@ -65,7 +65,6 @@ for j in range(0, len(lines[0])):
 visible = list(set(visible))
 list.sort(visible)
 print(visible)
-print(len(visible))
 
 class bcolors:
     HEADER = '\033[95m'
@@ -88,3 +87,4 @@ for i in range(0, len(lines)):
             out += bcolors.FAIL + lines[i][j] + bcolors.ENDC
     print(out)
 
+print(len(visible))
