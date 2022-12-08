@@ -61,5 +61,6 @@ for j in range(len(lines[i]) -1, -1, -1):
     print(cvisible)
 
 visible = list(set(visible))
+list.sort(visible)
 print(visible)
 print(len(visible))
