@@ -11,6 +11,7 @@ for i in range(0, len(lines)):
     maxseen = -1 
     cvisible = 0
     for j in range(0, len(lines[i])):
+        print("l: %s (m: %i)" % (lines[i][j], maxseen))
         if int(lines[i][j]) > maxseen:
             maxseen = int(lines[i][j])
             visible.append((i, j)) 
@@ -24,6 +25,7 @@ for i in range(0, len(lines)):
     maxseen = -1
     cvisible = 0
     for j in range(len(lines[i]) -1, -1, -1):
+        print("l: %s (m: %i)" % (lines[i][j], maxseen))
         if int(lines[i][j]) > maxseen:
             maxseen = int(lines[i][j])
             visible.append((i, j)) 
@@ -33,7 +35,7 @@ for i in range(0, len(lines)):
 print("------")
 # Top to bottom
 cvisible = 0
-for j in range(0, len(lines[i])):
+for j in range(0, len(lines[0])):
     maxseen = -1 
     cvisible = 0
     for i in range(0, len(lines)):
@@ -48,7 +50,7 @@ for j in range(0, len(lines[i])):
 print("------")
 # Bottom to top
 cvisible = 0
-for j in range(len(lines[i]) -1, -1, -1):
+for j in range(0, len(lines[0])):
     maxseen = 0
     cvisible = 0
     for i in range(len(lines) -1, -1, -1):
