@@ -184,7 +184,7 @@ def handleMovement(direction, count):
 
     for i in range(0, count):
         move()
-        draw(headpos, tailpos)
+        #draw(headpos, tailpos)
         moveTail(headpos, tailpos)
         visitedHead.append(tuple(headpos))
 
@@ -195,7 +195,9 @@ with open(sys.argv[1], 'r') as infile:
         direction, count = line.split(" ")
         lastDirection = direction
         handleMovement(direction, int(count))
-        draw(headpos, tailpos)
+        #draw(headpos, tailpos)
         print("**********")
     #print(visitedHead)
 
+print(list(dict.fromkeys(visitedTail)))
+print(len(list(dict.fromkeys(visitedTail))))
