@@ -251,18 +251,18 @@ def handleMovement(direction, count, headposA, tailposA):
     for i in range(0, count):
         print(i)
         move(headposA[0])
-        print("Headmove: ")
-        draw(headposA, tailposA)
+        #print("Headmove: ")
+        #draw(headposA, tailposA)
 
-        print("First tail:")
+        #print("First tail:")
         moveTail(0, headposA[0], tailposA[0])
-        draw(headposA, tailposA)
+        #draw(headposA, tailposA)
 
         for j in range(1, 9):
             moveTail(j, tailposA[j-1], tailposA[j])
 
-        print("Longtail: ")
-        draw(headposA, tailposA)
+        #print("Longtail: ")
+        #draw(headposA, tailposA)
 
         visitedHeadA[0].append(tuple(headposA[0]))
         #print("-----------")
@@ -274,11 +274,11 @@ with open(sys.argv[1], 'r') as infile:
         direction, count = line.split(" ")
         lastDirection = direction
         handleMovement(direction, int(count), headposA, tailposA)
-        print("Result: ")
-        print(headposA[0])
-        print("Min:( %i, %i) - Max: (%i, %i)" % (minX, minY, maxX, maxY))
-        draw(headposA, tailposA)
-        print("**********")
+        #print("Result: ")
+        #print(headposA[0])
+        #print("Min:( %i, %i) - Max: (%i, %i)" % (minX, minY, maxX, maxY))
+        #draw(headposA, tailposA)
+        #print("**********")
     #print(visitedHead)
 
 #print(visitedTailA)
