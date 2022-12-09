@@ -45,10 +45,11 @@ def oneStepDistance(headpos, tailpos):
         return False
  
 def twoStepDistance(headpos, tailpos):
-    if abs(headpos[1] - tailpos[1]) == 1 and abs(headpos[0] - tailpos[0]) == 2 or \
-       abs(headpos[1] - tailpos[1]) == 2 and abs(headpos[0] - tailpos[0]) == 1:
+    if abs(headpos[1] - tailpos[1]) <= 1 and abs(headpos[0] - tailpos[0]) == 2 or \
+       abs(headpos[1] - tailpos[1]) == 2 and abs(headpos[0] - tailpos[0]) <= 1:
          return True
     else:
+        print("Debug: %s - %s" % (abs(headpos[0] - tailpos[0]), abs(headpos[1] - tailpos[1])))
         return False
 
 def sameColumnOrRow(headpos, tailpos):
@@ -65,15 +66,18 @@ def moveTail(headpos, tailpos):
     if isTouching(headpos, tailpos):
         print("Touching")
     elif oneStepDistance(headpos, tailpos):
-        moveTailOneStep(lastDirection)
-        print("One step distance")
-    elif twoStepDistance(headpos, tailpos):
+        #moveTailOneStep(lastDirection)
+        print("One step distance - do nothing")
+    else:
+    #elif twoStepDistance(headpos, tailpos):
+        print("Two step distance")
         if sameColumnOrRow(headpos, tailpos):
+            print("Same column or row")
             moveTailOneStep(lastDirection)
         else:
             moveTailDiagonal()
-    else:
-        raise Exception("Can not handle distance")
+#    else:
+#        raise Exception("Can not handle distance")
 
 def moveTailDiagonal():
     print("move Diagonally")
@@ -180,6 +184,8 @@ def handleMovement(direction, count):
 
     for i in range(0, count):
         move()
+        draw(headpos, tailpos)
+        moveTail(headpos, tailpos)
         visitedHead.append(tuple(headpos))
 
 with open(sys.argv[1], 'r') as infile:
@@ -189,8 +195,6 @@ with open(sys.argv[1], 'r') as infile:
         direction, count = line.split(" ")
         lastDirection = direction
         handleMovement(direction, int(count))
-        draw(headpos, tailpos)
-        moveTail(headpos, tailpos)
         draw(headpos, tailpos)
         print("**********")
     #print(visitedHead)
