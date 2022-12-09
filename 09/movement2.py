@@ -1,4 +1,4 @@
-!/usr/bin/env python
+#!/usr/bin/env python
 import sys
 
 minX = 0
@@ -7,24 +7,24 @@ maxX = 0
 maxY = 0
 
 visitedHeadA = [[]]
-visitedTailA = [[]]
+visitedTailA = [[] for i in range(0, 9)]
 
 headposA = [[0,0]]
-tailposA = [[0,0]]
+tailposA = [[0,0] for i in range(0, 9)]
 
 lastDirection = "" 
 
 
-def draw(headpos, tailpos):
+def draw(headposA, tailposA):
     for y in range(minY, maxY + 1):
         line = ""
         for x in range(minX, maxX + 1):
             tpos = (x, y)
-            if tpos == tuple(headpos):
+            if tpos == tuple(headposA[0]):
                 #print("found")
                 line += "H" 
-            elif tpos == tuple(tailpos):
-                line += "T"
+            elif list(tpos) in tailposA:
+                line += str(tailposA.index(list(tpos)) + 1) 
             else:
                 line += "."
         print(line)
@@ -92,21 +92,21 @@ def moveTailDiagonal(position, headpos, tailpos):
         tailpos[1] -= 1
 
     # Update headpos history
-    visitedTail[position].append(tuple(tailpos))
+    visitedTailA[position].append(tuple(tailpos))
 
-def moveTailUp():
+def moveTailUp(tailpos):
     tailpos[1] += 1 
 
-def moveTailDown():
+def moveTailDown(tailpos):
     tailpos[1] -= 1
 
-def moveTailLeft():
+def moveTailLeft(tailpos):
     tailpos[0] -= 1
 
-def moveTailRight():
+def moveTailRight(tailpos):
     tailpos[0] += 1
 
-def moveTailOneStep(direction, position, tailpos):
+def moveTailOneStep(position, direction, tailpos):
     move = None
     if direction == 'L':
         move = moveTailLeft
@@ -154,30 +154,35 @@ def moveRight(headpos):
         maxX = headpos[0]
 
 
-def handleMovement(direction, count, headpos, tailpos):
+def handleMovement(direction, count, headposA, tailposA):
     move = None
     if direction == 'L':
-        move = moveLeft(headpos)
+        move = moveLeft
 
     elif direction == 'R':
-        move = moveRight(headpos)
+        move = moveRight
 
     elif direction == 'U':
-        move = moveUp(headpos)
+        move = moveUp
 
     elif direction == 'D':
-        move = moveDown(headpos)
+        move = moveDown
 
     else:
         raise Exception("Unknown direction")
 
     for i in range(0, count):
-        move()
-        #draw(headpos, tailpos)
-        for i in range(0, 9):
-            moveTail(position, headpos, tailpos)
+        move(headposA[0])
+        draw(headposA, tailposA)
+        moveTail(0, headposA[0], tailposA[0])
+        draw(headposA, tailposA)
 
-        visitedHeadA[0].append(tuple(headpos))
+        for i in range(1, 9):
+            moveTail(i, tailposA[i-1], tailposA[i])
+            draw(headposA, tailposA)
+
+        visitedHeadA[0].append(tuple(headposA[0]))
+        print("-----------")
 
 with open(sys.argv[1], 'r') as infile:
     for line in infile.readlines():
@@ -185,10 +190,11 @@ with open(sys.argv[1], 'r') as infile:
         line = line.strip()
         direction, count = line.split(" ")
         lastDirection = direction
-        handleMovement(direction, int(count), 0, tailpos)
+        handleMovement(direction, int(count), headposA, tailposA)
         #draw(headpos, tailpos)
         print("**********")
     #print(visitedHead)
 
-print(list(dict.fromkeys(visitedTailA)))
-print(len(list(dict.fromkeys(visitedTailA))))
+print(visitedTailA)
+print(list(dict.fromkeys(visitedTailA[-1])))
+print(len(list(dict.fromkeys(visitedTailA[-1]))))
