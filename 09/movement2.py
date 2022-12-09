@@ -16,28 +16,41 @@ lastDirection = ""
 
 
 def draw(headposA, tailposA):
-    for y in range(minY, maxY + 1):
+    global minY
+    global maxY
+    global minX
+    global maxY
+    print("min y: %i" % minY)
+    for y in range(minY -2, maxY + 1):
         line = ""
-        for x in range(minX, maxX + 1):
-            tpos = (x, maxY- y)
+        for x in range(minX -2, maxX + 1):
+            tpos = (x, y)
             if tpos == tuple(headposA[0]):
                 #print("found")
                 line += "H" 
+            elif tuple(tpos) in visitedTailA[-1]:
+                line += "#"
             elif list(tpos) in tailposA:
                 line += str(tailposA.index(list(tpos)) + 1) 
             else:
                 line += "."
+        line += "| %i" % y
         print(line)
 
 def drawVisited(visited):
+    global minY
+    global maxY
+    global minX
+    global maxY
     for y in range(minY - 5, maxY + 5):
         line = ""
         for x in range(minX - 5, maxX + 5):
-            tpos = (x, maxY-5-y)
+            tpos = (x, y)
             if tuple(tpos) in visited:
                 line += "#" 
             else:
                 line += "."
+        line += "| %i" % y
         print(line)
 
 
@@ -94,6 +107,8 @@ def moveTail(position, headpos, tailpos):
             moveTailDiagonal(position, headpos, tailpos)
 #    else:
 #        raise Exception("Can not handle distance")
+    visitedTailA[position].append(tuple(tailpos))
+
 
 def moveTailDiagonal(position, headpos, tailpos):
     global lastDirection
@@ -110,7 +125,6 @@ def moveTailDiagonal(position, headpos, tailpos):
 
     # Update headpos history
     lastDirection = 'X'
-    visitedTailA[position].append(tuple(tailpos))
 
 def moveTailUp(tailpos):
     global maxY
@@ -163,7 +177,6 @@ def moveTailOneStep(position, direction, tailpos):
         raise Exception("Unknown direction")
 
     move(tailpos)
-    visitedTailA[position].append(tuple(tailpos))
     lastDirection = direction
 
 def catchUp(position, headpos, tailpos):
@@ -190,14 +203,17 @@ def moveUp(headpos):
         maxY = headpos[1]
 
 def moveDown(headpos):
+    print("Down")
     global minY
     headpos[1] -= 1
 
     if headpos[1] < minY:
         minY = headpos[1]
+    print(headpos)
 
 def moveLeft(headpos):
     global minX
+
     headpos[0] -= 1
 
     if headpos[0] < minX:
