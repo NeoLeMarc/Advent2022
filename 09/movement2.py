@@ -19,7 +19,7 @@ def draw(headposA, tailposA):
     for y in range(minY, maxY + 1):
         line = ""
         for x in range(minX, maxX + 1):
-            tpos = (x, y)
+            tpos = (x, maxY- y)
             if tpos == tuple(headposA[0]):
                 #print("found")
                 line += "H" 
@@ -28,6 +28,19 @@ def draw(headposA, tailposA):
             else:
                 line += "."
         print(line)
+
+def drawVisited(visited):
+    for y in range(minY - 5, maxY + 5):
+        line = ""
+        for x in range(minX - 5, maxX + 5):
+            tpos = (x, maxY-5-y)
+            if tuple(tpos) in visited:
+                line += "#" 
+            else:
+                line += "."
+        print(line)
+
+
 
 def isTouching(headpos, tailpos):
     if headpos == tailpos:
@@ -64,23 +77,27 @@ def sameColumnOrRow(headpos, tailpos):
 # row or column, the tail always moves one step diagonally to keep up
 def moveTail(position, headpos, tailpos):
     if isTouching(headpos, tailpos):
-        print("Touching")
+        #print("Touching")
+        pass
     elif oneStepDistance(headpos, tailpos):
         #moveTailOneStep(lastDirection)
-        print("One step distance - do nothing")
+        #print("One step distance - do nothing")
+        pass
     else:
     #elif twoStepDistance(headpos, tailpos):
-        print("Two step distance")
+        #print("Two step distance")
         if sameColumnOrRow(headpos, tailpos):
-            print("Same column or row")
-            moveTailOneStep(position, lastDirection, tailpos)
+            #print("Same column or row")
+            #moveTailOneStep(position, lastDirection, tailpos)
+            catchUp(position, headpos, tailpos)
         else:
             moveTailDiagonal(position, headpos, tailpos)
 #    else:
 #        raise Exception("Can not handle distance")
 
 def moveTailDiagonal(position, headpos, tailpos):
-    print("move Diagonally")
+    global lastDirection
+    #print("move Diagonally")
     if headpos[0] > tailpos[0]:
         tailpos[0] += 1
     else:
@@ -92,19 +109,37 @@ def moveTailDiagonal(position, headpos, tailpos):
         tailpos[1] -= 1
 
     # Update headpos history
+    lastDirection = 'X'
     visitedTailA[position].append(tuple(tailpos))
 
 def moveTailUp(tailpos):
+    global maxY
     tailpos[1] += 1 
 
+    if tailpos[1] > maxY:
+        maxY = tailpos[1]
+
 def moveTailDown(tailpos):
+    global minY
     tailpos[1] -= 1
 
+    if tailpos[1] < minY:
+        minY = tailpos[1]
+
 def moveTailLeft(tailpos):
+    global minX
     tailpos[0] -= 1
 
+    if tailpos[0] < minX:
+        minX = tailpos[0]
+
 def moveTailRight(tailpos):
+    global maxX
     tailpos[0] += 1
+
+    if tailpos[0] > maxX:
+        maxX = tailpos[0]
+
 
 def moveTailOneStep(position, direction, tailpos):
     move = None
@@ -120,11 +155,33 @@ def moveTailOneStep(position, direction, tailpos):
     elif direction == 'D':
         move = moveTailDown
 
+    elif direction == 'X':
+        ## warning, last element moved diagonally
+        raise Exception("Moved diagonally")
+
     else:
         raise Exception("Unknown direction")
 
     move(tailpos)
     visitedTailA[position].append(tuple(tailpos))
+    lastDirection = direction
+
+def catchUp(position, headpos, tailpos):
+    # Need to catch up with head
+    distanceX = headpos[0] - tailpos[0]
+    distanceY = headpos[1] - tailpos[1]
+
+    if distanceX == 2:
+        ## head is in rightdirection
+        moveTailRight(tailpos)
+    elif distanceX == -2:
+        moveTailLeft(tailpos)
+    elif distanceY == 2:
+        moveTailUp(tailpos)
+    elif distanceY == -2:
+        moveTailDown(tailpos)
+    else:
+        raise Exception("Can not catch up with head")
 
 def moveUp(headpos):
     global maxY
@@ -168,21 +225,31 @@ def handleMovement(direction, count, headposA, tailposA):
     elif direction == 'D':
         move = moveDown
 
+    elif direction == 'X':
+        ## warning, last element moved diagonally
+        raise Exception("Moved diagonally")
+
     else:
         raise Exception("Unknown direction")
 
     for i in range(0, count):
+        print(i)
         move(headposA[0])
+        print("Headmove: ")
         draw(headposA, tailposA)
+
+        print("First tail:")
         moveTail(0, headposA[0], tailposA[0])
         draw(headposA, tailposA)
 
-        for i in range(1, 9):
-            moveTail(i, tailposA[i-1], tailposA[i])
-            draw(headposA, tailposA)
+        for j in range(1, 9):
+            moveTail(j, tailposA[j-1], tailposA[j])
+
+        print("Longtail: ")
+        draw(headposA, tailposA)
 
         visitedHeadA[0].append(tuple(headposA[0]))
-        print("-----------")
+        #print("-----------")
 
 with open(sys.argv[1], 'r') as infile:
     for line in infile.readlines():
@@ -191,10 +258,15 @@ with open(sys.argv[1], 'r') as infile:
         direction, count = line.split(" ")
         lastDirection = direction
         handleMovement(direction, int(count), headposA, tailposA)
-        #draw(headpos, tailpos)
+        print("Result: ")
+        print(headposA[0])
+        print("Min:( %i, %i) - Max: (%i, %i)" % (minX, minY, maxX, maxY))
+        draw(headposA, tailposA)
         print("**********")
     #print(visitedHead)
 
-print(visitedTailA)
-print(list(dict.fromkeys(visitedTailA[-1])))
+#print(visitedTailA)
+visited = list(dict.fromkeys(visitedTailA[-1]))
+print(visited)
 print(len(list(dict.fromkeys(visitedTailA[-1]))))
+drawVisited(visited)
