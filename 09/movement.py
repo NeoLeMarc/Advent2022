@@ -50,7 +50,12 @@ def twoStepDistance(headpos, tailpos):
          return True
     else:
         return False
- 
+
+def sameColumnOrRow(headpos, tailpos):
+    if headpos[0] == tailpos[0] or headpos[1] == tailpos[1]:
+        return True
+    else:
+        return False
 
 # If the head is ever two steps directly up, down, left or right from tail
 # then tail must move on step in that direction
@@ -63,12 +68,27 @@ def moveTail(headpos, tailpos):
         moveTailOneStep(lastDirection)
         print("One step distance")
     elif twoStepDistance(headpos, tailpos):
-        moveTailDiagonal(lastDirection)
+        if sameColumnOrRow(headpos, tailpos):
+            moveTailOneStep(lastDirection)
+        else:
+            moveTailDiagonal()
     else:
         raise Exception("Can not handle distance")
 
 def moveTailDiagonal():
-    raise Exception("not implemented")
+    print("move Diagonally")
+    if headpos[0] > tailpos[0]:
+        tailpos[0] += 1
+    else:
+        tailpos[0] -= 1
+
+    if headpos[1] > tailpos[1]:
+        tailpos[1] += 1
+    else:
+        tailpos[1] -= 1
+
+    # Update headpos history
+    visitedTail.append(tuple(tailpos))
 
 def moveTailUp():
     global tailpos 
