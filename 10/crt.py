@@ -3,7 +3,7 @@ import sys
 
 ip = 0
 cycles = []
-x = 0
+x = 1 
 
 def parseCommand(line):
     if line[0] == 'noop':
@@ -23,4 +23,4 @@ print(cycles)
 
 for i in range(0, len(cycles)):
     x += cycles[i]
-    print("%i - %i - %i" % (i+1, x, 20*x))
+    print("%i : %i : %i" % (i+1, x, 20*x))
