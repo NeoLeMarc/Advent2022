@@ -21,12 +21,24 @@ with open(sys.argv[1], 'r') as infile:
 
 print(cycles)
 
+def isVisible(pixelpos, spritemiddle):
+    if abs(pixelpos - spritemiddle) <= 1:
+        return True
+    else:
+        return False
+
 sum = 0
+line = ""
 for i in range(0, len(cycles)):
-    if i+1 in (20, 60, 100, 140, 180, 220):
-        sum += (i+1)*x
-        print("%i : %i : %i" % (i+1, x, (i+1)*x))
+    pos = i%40
+    if pos == 0:
+        print(line)
+        line = ""
+
+    if isVisible(pos, x):
+        line += "#"
+    else:
+        line += "-"
 
     x += cycles[i]
-print(sum)
-
+print(line)
