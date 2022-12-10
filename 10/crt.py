@@ -21,6 +21,12 @@ with open(sys.argv[1], 'r') as infile:
 
 print(cycles)
 
+sum = 0
 for i in range(0, len(cycles)):
+    if i+1 in (20, 60, 100, 140, 180, 220):
+        sum += (i+1)*x
+        print("%i : %i : %i" % (i+1, x, (i+1)*x))
+
     x += cycles[i]
-    print("%i : %i : %i" % (i+1, x, 20*x))
+print(sum)
+
