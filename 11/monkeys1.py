@@ -108,3 +108,7 @@ for i in range(0, 20):
 
 for monkey in monkeys:
     print(monkey.inspectcount)
+
+inspectcount = [i.inspectcount for i in monkeys]
+inspectcount.sort()
+print(inspectcount.pop() * inspectcount.pop())
