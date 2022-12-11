@@ -10,13 +10,13 @@ class Monkey:
         self.items = [int(i) for i in starting_items]
         self.operation = operation
         self.test = int(test)
-        self.truemonkey = int(truemonkey) - 1
-        self.falsemonkey = int(falsemonkey) - 1
+        self.truemonkey = int(truemonkey) 
+        self.falsemonkey = int(falsemonkey) 
         self.initems = []
         self.printState()
 
     def printState(self):
-        print("New monkey %i" % self.number)
+        print("Monkeystate %i" % self.number)
         print("Items: %s" % str(self.items))
         print("Operation: %s" % str(self.operation))
         print("Test: %i" % self.test)
@@ -30,33 +30,39 @@ class Monkey:
         else:
             increment = int(self.operation[1])
 
+        new = item
         if self.operation[0] == '+':
             new += increment
         elif self.operation[0] == '*':
-            new *= operation
+            new *= increment 
         else:
             raise Exception("Unknown operation")
 
+        print("Operation: %s : %s : %s" % (str(self.operation), item, new))
         return new
 
     def doTest(self, item):
-        if item % self.test:
-            return True
+        new = int(item / self.test)
+        if new % self.test:
+            return new, True
         else:
-            return False
+            return new, False
 
     def handleItem(self, item):
         new = self.doOperation(item)
+        new, testresult = self.doTest(new)
 
-        if self.doTest(item):
-            monkeys[truemonkey].throw(item)
+        if testresult:
+            monkeys[self.truemonkey].throw(new)
         else:
-            monkey[falsemonkey].throw(item)
+            monkeys[self.falsemonkey].throw(new)
 
     def throw(self, item):
+        print("! Monkey %i receiving item: %s" % (self.number, item))
         self.initems.append(item)
 
     def execute(self):
+        print("Run Monkey %i" % self.number)
         for item in self.items:
             self.handleItem(item)
         self.items = self.initems
@@ -78,3 +84,9 @@ with open(sys.argv[1], 'r') as file:
         monkeys.append(Monkey(monkeyNumber, itemsstr, operation, test, truemonkey, falsemonkey))
         file.readline()
         line = file.readline()
+
+for i in range(0, 20):
+    for monkey in monkeys:
+        monkey.printState()
+        monkey.execute()
+        print("****")
