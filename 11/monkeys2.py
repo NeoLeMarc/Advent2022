@@ -2,6 +2,7 @@
 import sys
 
 monkeys = []
+globalmodulo = 1
 
 class Monkey:
 
@@ -44,9 +45,9 @@ class Monkey:
         return new
 
     def doTest(self, item):
+        global globalmodulo
         self.inspectcount += 1
-        new = item 
-#        new = int(item / 3)
+        new = item % globalmodulo
 #        print("   Monkey gets bored with item. Worry level is divided by 3 to %i." % new)
         if new % self.test == 0:
             print("   Current worry level %i is divisible by %i." % (new, self.test))
@@ -61,10 +62,10 @@ class Monkey:
 
         if testresult:
             print("    Item with worry level %i is thrown to monkey %i" % (new, self.truemonkey))
-            monkeys[self.truemonkey].throw(item)
+            monkeys[self.truemonkey].throw(new)
         else:
             print("    Item with worry level %i is thrown to monkey %i" % (new, self.falsemonkey))
-            monkeys[self.falsemonkey].throw(item)
+            monkeys[self.falsemonkey].throw(new)
 
     def throw(self, item):
 #        print("! Monkey %i receiving item: %s" % (self.number, item))
@@ -98,6 +99,8 @@ with open(sys.argv[1], 'r') as file:
         monkeys.append(Monkey(monkeyNumber, itemsstr, operation, test, truemonkey, falsemonkey))
         file.readline()
         line = file.readline()
+        globalmodulo *= int(test)
+        print("Global modulo: %i" % globalmodulo)
 
 for i in range(0, 20): # 10000):
     print("\nRound: %i" % i)
@@ -108,7 +111,7 @@ for i in range(0, 20): # 10000):
         print("Monkey %i: " % monkeys.index(monkey) + str(monkey.getItems()))
 
 for monkey in monkeys:
-    print(monkey.inspectcount)
+    print("Monkey %i Inspect count: %i" % (monkey.number, monkey.inspectcount))
 
 inspectcount = [i.inspectcount for i in monkeys]
 inspectcount.sort()
