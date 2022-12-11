@@ -33,20 +33,25 @@ class Monkey:
         new = item
         if self.operation[0] == '+':
             new += increment
+            print("   Worry level increases by %i to %i." % (increment, new))
         elif self.operation[0] == '*':
             new *= increment 
+            print("   Worry is multiplied by %i to %i." % (increment, new))
         else:
             raise Exception("Unknown operation")
 
-        print("Operation: %s : %s : %s" % (str(self.operation), item, new))
+#        print("Operation: %s : %s : %s" % (str(self.operation), item, new))
         return new
 
     def doTest(self, item):
         self.inspectcount += 1
-        new = int(item / self.test)
-        if new % self.test:
+        new = int(item / 3)
+        print("   Monkey gets bored with item. Worry level is divided by 3 to %i." % new)
+        if new % self.test == 0:
+            print("   Current worry level %i is divisible by %i." % (new, self.test))
             return new, True
         else:
+            print("   Current worry level %i is not divisible by %i." % (new, self.test))
             return new, False
 
     def handleItem(self, item):
@@ -54,18 +59,26 @@ class Monkey:
         new, testresult = self.doTest(new)
 
         if testresult:
+            print("    Item with worry level %i is thrown to monkey %i" % (new, self.truemonkey))
             monkeys[self.truemonkey].throw(new)
         else:
+            print("    Item with worry level %i is thrown to monkey %i" % (new, self.falsemonkey))
             monkeys[self.falsemonkey].throw(new)
 
     def throw(self, item):
-        print("! Monkey %i receiving item: %s" % (self.number, item))
+#        print("! Monkey %i receiving item: %s" % (self.number, item))
         self.items.append(item)
 
+    def getItems(self):
+        return self.items
+
     def execute(self):
-        print("Run Monkey %i" % self.number)
+#        print("Run Monkey %i" % self.number)
+        print("Monkey %i:" % self.number)
+        self.items.reverse()
         while self.items:
             item = self.items.pop()
+            print(" Monkey inspects an item with a worry level of %i." % item)
             self.handleItem(item)
 
 
@@ -86,10 +99,12 @@ with open(sys.argv[1], 'r') as file:
         line = file.readline()
 
 for i in range(0, 20):
+    print("\nRound: %i" % i)
     for monkey in monkeys:
-        monkey.printState()
         monkey.execute()
-        print("****")
+
+    for monkey in monkeys:
+        print("Monkey %i: " % monkeys.index(monkey) + str(monkey.getItems()))
 
 for monkey in monkeys:
     print(monkey.inspectcount)
