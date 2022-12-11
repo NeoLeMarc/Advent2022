@@ -9,14 +9,14 @@ class Monkey:
         self.number = number
         self.items = [int(i) for i in starting_items]
         self.operation = operation
-        self.test = test
-        self.truemonkey = truemonkey - 1
-        self.falsemonkey = falsemonkey - 1
+        self.test = int(test)
+        self.truemonkey = int(truemonkey) - 1
+        self.falsemonkey = int(falsemonkey) - 1
         self.initems = []
         self.printState()
 
     def printState(self):
-        print("New monkey %i" % self.numner)
+        print("New monkey %i" % self.number)
         print("Items: %s" % str(self.items))
         print("Operation: %s" % str(self.operation))
         print("Test: %i" % self.test)
@@ -67,13 +67,14 @@ with open(sys.argv[1], 'r') as file:
     line = file.readline()
     while line:
         print(line)
-        monkeyNumber = int(line.split(' ')[7])
+        monkeyNumber = int(line.strip().split(' ')[1][:-1])
 
-        itemsstr = file.readline().split(' ')[2:]
-        operation = file.readline().split(' ')[-3:-1]
+        itemsstr = file.readline().strip().split(':')[1].split(',')
+        operation = file.readline().strip().split(' ')[-2:]
         test = file.readline().split(' ')[-1]
         truemonkey = file.readline().split(' ')[-1]
         falsemonkey = file.readline().split(' ')[-1]
 
-        monkey[monkeyNumber] = Monkey(monkeyNumber, itemstr, operation, test, truemonkey, falsemonkey)
+        monkeys.append(Monkey(monkeyNumber, itemsstr, operation, test, truemonkey, falsemonkey))
+        file.readline()
         line = file.readline()
