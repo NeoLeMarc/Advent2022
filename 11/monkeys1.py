@@ -12,8 +12,8 @@ class Monkey:
         self.test = int(test)
         self.truemonkey = int(truemonkey) 
         self.falsemonkey = int(falsemonkey) 
-        self.initems = []
         self.printState()
+        self.inspectcount = 0
 
     def printState(self):
         print("Monkeystate %i" % self.number)
@@ -42,6 +42,7 @@ class Monkey:
         return new
 
     def doTest(self, item):
+        self.inspectcount += 1
         new = int(item / self.test)
         if new % self.test:
             return new, True
@@ -59,14 +60,13 @@ class Monkey:
 
     def throw(self, item):
         print("! Monkey %i receiving item: %s" % (self.number, item))
-        self.initems.append(item)
+        self.items.append(item)
 
     def execute(self):
         print("Run Monkey %i" % self.number)
-        for item in self.items:
+        while self.items:
+            item = self.items.pop()
             self.handleItem(item)
-        self.items = self.initems
-        self.initems = []
 
 
 with open(sys.argv[1], 'r') as file:
@@ -90,3 +90,6 @@ for i in range(0, 20):
         monkey.printState()
         monkey.execute()
         print("****")
+
+for monkey in monkeys:
+    print(monkey.inspectcount)
