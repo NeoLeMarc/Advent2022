@@ -8,6 +8,8 @@ minpath = 1400
 deadends = []
 visited = []
 showcount = 0 
+tpos = (int(sys.argv[4]), int(sys.argv[5]))
+visited.append(tpos)
 
 def printMap(path):
     print("Path End: %s" % str(path[-1]))
@@ -137,6 +139,11 @@ def walker(path, prefix, curletter, curpos, direction, greedy, foundpath = []):
 
 
         if greedy > 0:
+            shufflepath = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+            import random
+            for dt in random.choices(shufflepath, k=4):
+                res = walker(path, prefix, curletter, newpos, dt, greedy, foundpath)
+
             if lines[max(newpos_x - 1, 0)][newpos_y] < curletter:
                 res = walker(path, prefix, curletter, newpos, (-1, 0), greedy, foundpath)
             elif lines[min(newpos_x + 1, len(lines) - 1)][newpos_y] < curletter:
@@ -277,7 +284,7 @@ def getEdge(node, distance, inpath, target):
     if 0 <= target[0] < len(lines) and 0 <= target[1] < len(lines[0]):
         cSource = lines[node[0]][node[1]]
         cTarget = lines[target[0]][target[1]]
-        if target in inpath and isAllowed(cTarget, cSource):
+        if target in visited and isAllowed(cTarget, cSource):
             retedges.append((node, distance, target, cTarget, cSource))
     return retedges
 
@@ -301,17 +308,25 @@ def searchpath(inpath):
                 edges[target] = []
             edges[target].append(edge)
 
-searchpath(foundpath)
+visited.append(startpos)
+#allpath = [startpos]
+#for x in range(0, len(lines)):
+#    for y in range(0, len(lines[x])):
+#        allpath.append((x, y))
+#print(allpath)
+for path in paths:
+    searchpath(path)
 
 opath = []
 print(edges)
 found = False
 print(sys.argv)
-tpos = (int(sys.argv[4]), int(sys.argv[5]))
 print("Tpos: %s" % str(tpos))
 candidateedges = edges[tpos]
 minl = 9999
 seen = []
+strpath = ""
+i = 0
 while not found:
     mine = None
     print(candidateedges)
@@ -328,16 +343,22 @@ while not found:
             print(mine)
             minl = mine[1]
             opath.append(mine[0])
+            strpath += mine[3]
             print("---------")
     if mine == None:
         if not found:
             raise Exception("Dead End")
     else:
         candidateedges = edges[mine[0]]
+
     print(candidate)
-    printMap(opath)
+    i = (i + 1) % 10
+    if i == 1:
+        printMap(opath)
 print(opath)
 printMap(opath)
 print(len(opath))
+print(strpath)
+print(len(strpath))
 sys.stdout.flush()
 print("The End!")
