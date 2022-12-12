@@ -265,18 +265,20 @@ printMap(foundpath)
 edges = {} 
 
 def isAllowed(a, b):
-    if abs(ord(a) - ord(b)) <= 1 or a > b:
+    if b == 'E' and a != 'z':
+        return False
+    elif abs(ord(a) - ord(b)) <= 1 or a > b or a == 'S':
         return True
     else:
         return False
 
 def getEdge(node, distance, inpath, target):
     retedges = []
-    if 0 <= target[0] <= len(lines) and  0 <= target[1] <= len(lines[0]):
+    if 0 <= target[0] < len(lines) and 0 <= target[1] < len(lines[0]):
         cSource = lines[node[0]][node[1]]
         cTarget = lines[target[0]][target[1]]
-        if target in inpath and isAllowed(cSource, cTarget):
-            retedges.append((node, distance, target))
+        if target in inpath and isAllowed(cTarget, cSource):
+            retedges.append((node, distance, target, cTarget, cSource))
     return retedges
 
 def getEdges(node, distance, inpath):
@@ -319,10 +321,10 @@ while not found:
             print("Found!")
             found = True
             break
-        elif candidate[1] < minl and candidate not in seen:
+        elif candidate[1] < minl and candidate[2] not in seen:
             print("Found candidate")
             mine = candidate
-            seen.append(mine) 
+            seen.append(mine[2]) 
             print(mine)
             minl = mine[1]
             opath.append(mine[0])
@@ -333,6 +335,7 @@ while not found:
     else:
         candidateedges = edges[mine[0]]
     print(candidate)
+    printMap(opath)
 print(opath)
 printMap(opath)
 print(len(opath))
