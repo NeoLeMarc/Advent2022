@@ -48,10 +48,10 @@ def walker(path, prefix, curletter, curpos, direction):
     if curpos not in visited:
         visited.append(curpos)
     global deadends
-    if curpos in deadends:
-        print("Hit a deadend, exiting")
-        print("\nwalker(%s, %s, %s, %s, %s)" % (str(path), prefix, curletter, str(curpos), str(direction)))
-        return False
+    #if curpos in deadends:
+    #    print("Hit a deadend, exiting")
+    #    print("\nwalker(%s, %s, %s, %s, %s)" % (str(path), prefix, curletter, str(curpos), str(direction)))
+    #    return False
     path = copy.copy(path)
     global ways
     global paths
