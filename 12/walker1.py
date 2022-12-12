@@ -290,14 +290,23 @@ opath = []
 
 found = False
 candidateedges = edges[20, 0]
+minl = 9999
 while not found:
-    minl = 9999
     mine = None
+    print(candidateedges)
     for candidate in candidateedges:
+        print(candidate)
         if candidate[0] == startpos:
             print("Found!")
             found = True
             break
         elif candidate[1] < minl:
+            print("Found candidate")
             mine = candidate
-        candidateedges = edges[mine[0]]
+            print(mine)
+            minl = mine[1]
+            print("---------")
+    if mine == None:
+        raise Exception("Dead End")
+    candidateedges = edges[mine[2]]
+    print(candidate)
