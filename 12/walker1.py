@@ -283,7 +283,7 @@ def searchpath(inpath):
     for node in inpath:
         distance += 1
         for edge in getEdges(node, distance, inpath):
-            target = edges[2]
+            target = edge[2]
             if target not in edges:
                 edges[target] = []
             edges[target].append(edge)
@@ -296,7 +296,6 @@ found = False
 candidateedges = edges[(20,0)]
 minl = 9999
 seen = []
-seen.append((20, 0))
 while not found:
     mine = None
     print(candidateedges)
@@ -306,14 +305,20 @@ while not found:
             print("Found!")
             found = True
             break
-        elif candidate[1] < minl and candidate[2] not in seen:
+        elif candidate[1] < minl and candidate not in seen:
             print("Found candidate")
             mine = candidate
             seen.append(mine) 
             print(mine)
             minl = mine[1]
+            opath.append(mine[0])
             print("---------")
     if mine == None:
-        raise Exception("Dead End")
-    candidateedges = edges[mine[2]]
+        if not found:
+            raise Exception("Dead End")
+    else:
+        candidateedges = edges[mine[0]]
     print(candidate)
+print(opath)
+printMap(opath)
+print(len(opath))
