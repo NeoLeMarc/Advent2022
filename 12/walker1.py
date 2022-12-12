@@ -4,7 +4,7 @@ sys.setrecursionlimit(5000)
 lines = ""
 ways = []
 paths = []
-minpath = 0
+minpath = 1400 
 deadends = []
 visited = []
 showcount = 0 
@@ -96,8 +96,18 @@ def walker(path, prefix, curletter, curpos, direction, greedy, foundpath = []):
         ways.append(prefix)
         #print("End found")
         if minpath == 0 or len(path) <= minpath:
+            foundpath = ways[-1]
             print("Minpath: %i" % minpath)
             minpath = len(path)
+            print(prefix)
+            print("Minpath: %i" % minpath)
+            print("Prefix len %i" % len(path))
+            print("Greedy %i" % greedy)
+            print("Ways found: %i" % len(ways))
+            if len(ways):
+                print("Waylength: %i" % len(ways[-1]))
+            print("Len foundpath: %i" % len(foundpath))
+ 
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
         printMap(path)
  
@@ -168,6 +178,9 @@ def walker(path, prefix, curletter, curpos, direction, greedy, foundpath = []):
             print("Minpath: %i" % minpath)
             print("Prefix len %i" % len(path))
             print("Greedy %i" % greedy)
+            print("Ways found: %i" % len(ways))
+            if len(ways):
+                print("Waylength: %i" % len(ways[-1]))
             print("Len foundpath: %i" % len(foundpath))
             printMap(path)
         #printDebug(path, prefix, curletter, curpos, newpos, direction)
@@ -186,30 +199,69 @@ newpos = startpos
 
 # Start greedy
 walker([startpos], 'E', 'E', newpos, (0,1), 1)
-walker([startpos], 'E', 'E', newpos, (1,0), 1)
-walker([startpos], 'E', 'E', newpos, (-1,0), 1)
-walker([startpos], 'E', 'E', newpos, (0,-1), 1)
+#walker([startpos], 'E', 'E', newpos, (1,0), 1)
+#walker([startpos], 'E', 'E', newpos, (-1,0), 1)
+#walker([startpos], 'E', 'E', newpos, (0,-1), 1)
 print(ways)
 
 # Thorough
-foundpath = paths[-1]
-walker([startpos], 'E', 'E', newpos, (0,1), 0, foundpath)
-walker([startpos], 'E', 'E', newpos, (1,0), 0, foundpath)
-walker([startpos], 'E', 'E', newpos, (-1,0), 0, foundpath)
-walker([startpos], 'E', 'E', newpos, (0,-1), 0, foundpath)
-print(ways)
+minpath = 1400 
+for i in range(1400, 1):
+    print("Presearch %i" % i)
+    deadends = []
+    foundpath = paths[-1]
+    walker([startpos], 'E', 'E', newpos, (0,1), 0, foundpath)
+    #walker([startpos], 'E', 'E', newpos, (1,0), 0, foundpath)
+    #walker([startpos], 'E', 'E', newpos, (-1,0), 0, foundpath)
+    #walker([startpos], 'E', 'E', newpos, (0,-1), 0, foundpath)
+    print(ways)
 
+    foundpath = paths[-1]
+    if len(foundpath) < minpath:
+        minpath = len(foundpath)
+    else:
+        minpath -= 1
+
+    #walker([startpos], 'E', 'E', newpos, (0,1), -1, foundpath)
+    #walker([startpos], 'E', 'E', newpos, (1,0), -1, foundpath)
+    #walker([startpos], 'E', 'E', newpos, (-1,0), -1, foundpath)
+    #walker([startpos], 'E', 'E', newpos, (0,-1), -1, foundpath)
+    print(i)
+    print(ways)
+    print("----------------------------------------------------------")
+
+import time
+print("Next phase")
 foundpath = paths[-1]
-walker([startpos], 'E', 'E', newpos, (0,1), -1, foundpath)
-walker([startpos], 'E', 'E', newpos, (1,0), -1, foundpath)
-walker([startpos], 'E', 'E', newpos, (-1,0), -1, foundpath)
-walker([startpos], 'E', 'E', newpos, (0,-1), -1, foundpath)
-print(ways)
+minpath = len(foundpath) 
+for i in range(min(minpath, 790), 40, -1):
+    print("Presearch %i" % i)
+    foundpath = paths[-1]
+    walker([startpos], 'E', 'E', newpos, (0,1), 0, foundpath)
+    #walker([startpos], 'E', 'E', newpos, (1,0), 0, foundpath)
+    #walker([startpos], 'E', 'E', newpos, (-1,0), 0, foundpath)
+    #walker([startpos], 'E', 'E', newpos, (0,-1), 0, foundpath)
+    print(ways)
+
+    foundpath = paths[-1]
+    if len(foundpath) < minpath:
+        minpath = len(foundpath)
+    else:
+        minpath -= 1
+
+    walker([startpos], 'E', 'E', newpos, (0,1), -1, foundpath)
+    walker([startpos], 'E', 'E', newpos, (1,0), -1, foundpath)
+    walker([startpos], 'E', 'E', newpos, (-1,0), -1, foundpath)
+    walker([startpos], 'E', 'E', newpos, (0,-1), -1, foundpath)
+    print(i)
+    time.sleep(1)
+    print(ways)
+
 
 import time
 print("Waiting until starting thorough approach")
+print(len(foundpath))
 time.sleep(10)
-sys.exit(1)
 
 # Thorough
 walker([startpos], 'E', 'E', newpos, (0,1), -1)
