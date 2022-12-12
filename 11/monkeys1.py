@@ -44,6 +44,7 @@ class Monkey:
     def doTest(self, item):
         self.inspectcount += 1
         new = int(item / self.test)
+        print("Test: %i -> %i " % (item, new))
         if new % self.test:
             return new, True
         else:
@@ -92,4 +93,4 @@ for i in range(0, 20):
         print("****")
 
 for monkey in monkeys:
-    print(monkey.inspectcount)
+    print("%i - %s" % (monkey.number, str(monkey.inspectcount)))
