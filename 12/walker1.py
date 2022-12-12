@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys, copy
+sys.setrecursionlimit(5000)
 lines = ""
 ways = []
 paths = []
