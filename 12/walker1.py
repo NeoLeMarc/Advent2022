@@ -6,30 +6,36 @@ paths = []
 minpath = 0
 deadends = []
 
+def printDebug(path, prefix, curletter, curpos, newpos, direction):
+    print("Path: %s" % path)
+    print("Prefix: %s" % prefix)
+    print("Curletter: %s" % curletter)
+    print("Curpos: %s" % str(curpos))
+    print("Newpos: %s" % str(newpos))
+    print("Direction: %s" % str(direction))
+
+
 def walker(path, prefix, curletter, curpos, direction):
+    global deadends
+    if curpos in deadends:
+        print("Hit a deadend, exiting")
+        print("\nwalker(%s, %s, %s, %s, %s)" % (str(path), prefix, curletter, str(curpos), str(direction)))
+        return False
     path = copy.copy(path)
-    #print("\nwalker(%s, %s, %s, %s, %s)" % (str(path), prefix, curletter, str(curpos), str(direction)))
     global ways
     global paths
     global minpath
     if minpath > 0 and len(path) + 1 >= minpath:
-        #print("Already found shorter path, exiting")
+        print("Already found shorter path, exiting")
         return False
     newpos = (curpos[0] + direction[0], curpos[1] + direction[1])
  
-    #print("Path: %s" % path)
-    #print("Prefix: %s" % prefix)
-    #print("Curletter: %s" % curletter)
-    #print("Curpos: %s" % str(curpos))
-    #print("Newpos: %s" % str(newpos))
-    #print("Direction: %s" % str(direction))
-
 
     if newpos[0] < 0 or newpos[0] >= len(lines):
-        #print("Outside grid")
+        print("Outside grid")
         return False #  Outside of grid
     elif newpos[1] < 0 or newpos[1]  >= len(lines[0]):
-        #print("Outside grid")
+        print("Outside grid")
         return False # Outside of grid
 
 
@@ -91,10 +97,14 @@ def walker(path, prefix, curletter, curpos, direction):
                 walker(path, prefix, curletter, newpos, (1, 0)):
                     return True
         else:
+            # Hit a deadend
+            print("Found deadend")
+            printDebug(path, prefix, curletter, curpos, newpos, direction)
+            deadends.append(newpos)
             return False
     else:
         # Path ends here
-        #print("End of path")
+        print("End of path")
         return False
 
 with open(sys.argv[1], "r") as infile:
@@ -102,12 +112,16 @@ with open(sys.argv[1], "r") as infile:
 
 print("Start")
 
-print(lines[20][158])
+startpos = (int(sys.argv[2]), int(sys.argv[3]))
+print(startpos)
+print(lines[startpos[0]][startpos[1]])
 print("Minpath try: %i" % minpath)
-walker([(20,158)], 'E', 'E', (20, 158), (1,0))
-walker([(20,158)], 'E', 'E', (20, 158), (0,1))
-walker([(20,158)], 'E', 'E', (20, 158), (-1,0))
-walker([(20,158)], 'E', 'E', (20, 158), (0,-1))
+newpos = startpos
+
+walker([startpos], 'E', 'E', newpos, (1,0))
+walker([startpos], 'E', 'E', newpos, (0,1))
+walker([startpos], 'E', 'E', newpos, (-1,0))
+walker([startpos], 'E', 'E', newpos, (0,-1))
 print(ways)
 
 for way in ways:
