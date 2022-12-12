@@ -12,7 +12,7 @@ def walker(path, prefix, curletter, curpos, direction):
     global paths
     global minpath
     if minpath > 0 and len(path) + 1 >= minpath:
-#        print("Already found shorter path, exiting")
+        #print("Already found shorter path, exiting")
         return False
     newpos = (curpos[0] + direction[0], curpos[1] + direction[1])
  
@@ -25,10 +25,10 @@ def walker(path, prefix, curletter, curpos, direction):
 
 
     if newpos[0] < 0 or newpos[0] >= len(lines):
-    #    print("Outside grid")
+        #print("Outside grid")
         return False #  Outside of grid
     elif newpos[1] < 0 or newpos[1]  >= len(lines[0]):
-    #    print("Outside grid")
+        #print("Outside grid")
         return False # Outside of grid
 
 
@@ -36,7 +36,7 @@ def walker(path, prefix, curletter, curpos, direction):
     #print("Newletter: %s" % newletter)
 
     if newpos in path:
-     #   print("Moving backwards")
+        #print("Moving backwards")
         return False # Moving to already visited path
 
     path.append(newpos)
@@ -52,23 +52,23 @@ def walker(path, prefix, curletter, curpos, direction):
             minpath = len(path)
         return True 
 
-    elif newletter == 'E' or newletter <= curletter and abs(ord(newletter) - ord(curletter)) <= 1:
-    #    print(prefix)
-    #    print("Found higher letter")
+    elif curletter == 'E' or newletter == 'E' or newletter <= curletter and abs(ord(newletter) - ord(curletter)) <= 1:
+        #print(prefix)
+        #print("Found higher letter")
         prefix += newletter 
         curletter = newletter
 
         # Move in all possible directions
-        if walker(path, prefix, curletter, newpos, (0, 1)) or \
-                walker(path, prefix, curletter, newpos, (0, -1)) or \
-                walker(path, prefix, curletter, newpos, (1, 0)) or \
-                walker(path, prefix, curletter, newpos, (-1, 0)):
+        if walker(path, prefix, curletter, newpos, (0, -1)) or \
+                walker(path, prefix, curletter, newpos, (-1, 0)) or \
+                walker(path, prefix, curletter, newpos, (0, 1)) or \
+                walker(path, prefix, curletter, newpos, (1, 0)):
                     return True
         else:
             return False
     else:
         # Path ends here
-     #   print("End of path")
+        #print("End of path")
         return False
 
 with open(sys.argv[1], "r") as infile:
@@ -77,10 +77,11 @@ with open(sys.argv[1], "r") as infile:
 print("Start")
 
 print(lines[20][158])
-minpath = 1000
 print("Minpath try: %i" % minpath)
-walker([(20,158)], 'E', 'a', (0, 0), (1,0))
-walker([(20,158)], 'E', 'a', (0, 0), (0,1))
+walker([(20,158)], 'E', 'E', (20, 158), (1,0))
+walker([(20,158)], 'E', 'E', (20, 158), (0,1))
+walker([(20,158)], 'E', 'E', (20, 158), (-1,0))
+walker([(20,158)], 'E', 'E', (20, 158), (0,-1))
 print(ways)
 
 for way in ways:
