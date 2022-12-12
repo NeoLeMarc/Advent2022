@@ -199,14 +199,14 @@ newpos = startpos
 
 # Start greedy
 walker([startpos], 'E', 'E', newpos, (0,1), 1)
-#walker([startpos], 'E', 'E', newpos, (1,0), 1)
-#walker([startpos], 'E', 'E', newpos, (-1,0), 1)
-#walker([startpos], 'E', 'E', newpos, (0,-1), 1)
+walker([startpos], 'E', 'E', newpos, (1,0), 1)
+walker([startpos], 'E', 'E', newpos, (-1,0), 1)
+walker([startpos], 'E', 'E', newpos, (0,-1), 1)
 print(ways)
 
 # Thorough
 minpath = 1400 
-for i in range(1400, 1):
+for i in range(1400, 0):
     print("Presearch %i" % i)
     deadends = []
     foundpath = paths[-1]
@@ -231,9 +231,12 @@ for i in range(1400, 1):
     print("----------------------------------------------------------")
 
 print("Next phase")
-foundpath = paths[-1]
+if len(paths):
+    foundpath = paths[-1]
+else:
+    foundpath = []
 minpath = len(foundpath) 
-for i in range(min(minpath, 790), 40, -1):
+for i in range(min(minpath, 790), 0, -1):
     print("Presearch %i" % i)
     foundpath = paths[-1]
     walker([startpos], 'E', 'E', newpos, (0,1), 0, foundpath)
@@ -261,11 +264,19 @@ print(ways)
 printMap(foundpath)
 edges = {} 
 
+def isAllowed(a, b):
+    if abs(ord(a) - ord(b)) <= 1 or a > b:
+        return True
+    else:
+        return False
 
 def getEdge(node, distance, inpath, target):
     retedges = []
-    if target in inpath:
-        retedges.append((node, distance, target))
+    if 0 <= target[0] <= len(lines) and  0 <= target[1] <= len(lines[0]):
+        cSource = lines[node[0]][node[1]]
+        cTarget = lines[target[0]][target[1]]
+        if target in inpath and isAllowed(cSource, cTarget):
+            retedges.append((node, distance, target))
     return retedges
 
 def getEdges(node, distance, inpath):
