@@ -230,7 +230,6 @@ for i in range(1400, 1):
     print(ways)
     print("----------------------------------------------------------")
 
-import time
 print("Next phase")
 foundpath = paths[-1]
 minpath = len(foundpath) 
@@ -241,7 +240,7 @@ for i in range(min(minpath, 790), 40, -1):
     #walker([startpos], 'E', 'E', newpos, (1,0), 0, foundpath)
     #walker([startpos], 'E', 'E', newpos, (-1,0), 0, foundpath)
     #walker([startpos], 'E', 'E', newpos, (0,-1), 0, foundpath)
-    print(ways)
+    #print(ways)
 
     foundpath = paths[-1]
     if len(foundpath) < minpath:
@@ -249,34 +248,56 @@ for i in range(min(minpath, 790), 40, -1):
     else:
         minpath -= 1
 
-    walker([startpos], 'E', 'E', newpos, (0,1), -1, foundpath)
-    walker([startpos], 'E', 'E', newpos, (1,0), -1, foundpath)
-    walker([startpos], 'E', 'E', newpos, (-1,0), -1, foundpath)
-    walker([startpos], 'E', 'E', newpos, (0,-1), -1, foundpath)
-    print(i)
-    time.sleep(1)
-    print(ways)
-
-
 import time
 print("Waiting until starting thorough approach")
 print(len(foundpath))
-time.sleep(10)
 
-# Thorough
-walker([startpos], 'E', 'E', newpos, (0,1), -1)
-walker([startpos], 'E', 'E', newpos, (1,0), -1)
-walker([startpos], 'E', 'E', newpos, (-1,0), -1)
-walker([startpos], 'E', 'E', newpos, (0,-1), -1)
-print(ways)
-
-
-
-for way in ways:
-    print(len(way))
+print("Now dijkstra")
 
 print(paths)
 pathlen = [len(i) for i in paths]
 print(min(pathlen))
 print(ways)
-printMap(paths[0])
+printMap(foundpath)
+edges = {} 
+
+
+def getEdge(node, distance, inpath, target):
+    retedges = []
+    if target in inpath:
+        retedges.append((node, distance, target))
+    return retedges
+
+def getEdges(node, distance, inpath):
+    x, y = node
+    retedges = []
+
+    for n in [(x -1, y), (x, y - 1), (x + 1, y), (x, y + 1)]:
+        retedges.extend(getEdge(node, distance, inpath, n))
+
+    return retedges
+
+def searchpath(inpath):
+    distance = 0
+
+    for node in inpath:
+        distance += 1
+        edges[node] = getEdges(node, distance, inpath)
+
+searchpath(foundpath)
+
+opath = []
+
+found = False
+candidateedges = edges[20, 0]
+while not found:
+    minl = 9999
+    mine = None
+    for candidate in candidateedges:
+        if candidate[0] == startpos:
+            print("Found!")
+            found = True
+            break
+        elif candidate[1] < minl:
+            mine = candidate
+        candidateedges = edges[mine[0]]
