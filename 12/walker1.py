@@ -136,22 +136,22 @@ def walker(path, prefix, curletter, curpos, direction, greedy, foundpath = []):
             if (newpos_x , newpos_y + 1) in foundpath:
                 res = walker(path, prefix, curletter, newpos, (0, 1), greedy, foundpath)
 
-
-
         if greedy > 0:
-            shufflepath = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-            import random
-            for dt in random.choices(shufflepath, k=4):
+             if lines[max(newpos_x - 1, 0)][newpos_y] < curletter:
+                res = walker(path, prefix, curletter, newpos, (-1, 0), greedy, foundpath) 
+             if lines[min(newpos_x + 1, len(lines) - 1)][newpos_y] < curletter:
+                res = walker(path, prefix, curletter, newpos, (1, 0), greedy, foundpath)
+             if lines[newpos_x][max(newpos_y - 1, 0)] < curletter:
+                res = walker(path, prefix, curletter, newpos, (0, -1), greedy, foundpath)
+             if lines[newpos_x][min(newpos_y + 1, len(lines[0]))] < curletter:
+                res = walker(path, prefix, curletter, newpos, (0, 1), greedy, foundpath)
+
+             shufflepath = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+             import random
+             for dt in random.choices(shufflepath, k=4):
                 res = walker(path, prefix, curletter, newpos, dt, greedy, foundpath)
 
-            if lines[max(newpos_x - 1, 0)][newpos_y] < curletter:
-                res = walker(path, prefix, curletter, newpos, (-1, 0), greedy, foundpath)
-            elif lines[min(newpos_x + 1, len(lines) - 1)][newpos_y] < curletter:
-                res = walker(path, prefix, curletter, newpos, (1, 0), greedy, foundpath)
-            elif lines[newpos_x][max(newpos_y - 1, 0)] < curletter:
-                res = walker(path, prefix, curletter, newpos, (0, -1), greedy, foundpath)
-            elif lines[newpos_x][min(newpos_y + 1, len(lines[0]))] < curletter:
-                res = walker(path, prefix, curletter, newpos, (0, 1), greedy, foundpath)
+
 
         if res and greedy:
             # Shortcut found
@@ -205,31 +205,31 @@ print("Minpath try: %i" % minpath)
 newpos = startpos
 
 # Start greedy
-walker([startpos], 'E', 'E', newpos, (0,1), 1)
-walker([startpos], 'E', 'E', newpos, (1,0), 1)
-walker([startpos], 'E', 'E', newpos, (-1,0), 1)
-walker([startpos], 'E', 'E', newpos, (0,-1), 1)
-print(ways)
+#walker([startpos], 'E', 'E', newpos, (0,1), 1)
+#walker([startpos], 'E', 'E', newpos, (1,0), 1)
+#walker([startpos], 'E', 'E', newpos, (-1,0), 1)
+#walker([startpos], 'E', 'E', newpos, (0,-1), 1)
+#print(ways)
 
 # Thorough
 minpath = 1400 
 for i in range(1400, 0):
     print("Presearch %i" % i)
-    deadends = []
-    foundpath = paths[-1]
-    walker([startpos], 'E', 'E', newpos, (0,1), 0, foundpath)
+    #deadends = []
+    #foundpath = paths[-1]
+    #walker([startpos], 'E', 'E', newpos, (0,1), 0, foundpath)
     #walker([startpos], 'E', 'E', newpos, (1,0), 0, foundpath)
     #walker([startpos], 'E', 'E', newpos, (-1,0), 0, foundpath)
     #walker([startpos], 'E', 'E', newpos, (0,-1), 0, foundpath)
     print(ways)
 
-    foundpath = paths[-1]
+    #foundpath = paths[-1]
     if len(foundpath) < minpath:
         minpath = len(foundpath)
     else:
         minpath -= 1
 
-    #walker([startpos], 'E', 'E', newpos, (0,1), -1, foundpath)
+#    walker([startpos], 'E', 'E', newpos, (0,1), -1, foundpath)
     #walker([startpos], 'E', 'E', newpos, (1,0), -1, foundpath)
     #walker([startpos], 'E', 'E', newpos, (-1,0), -1, foundpath)
     #walker([startpos], 'E', 'E', newpos, (0,-1), -1, foundpath)
@@ -246,7 +246,7 @@ minpath = len(foundpath)
 for i in range(min(minpath, 790), 0, -1):
     print("Presearch %i" % i)
     foundpath = paths[-1]
-    walker([startpos], 'E', 'E', newpos, (0,1), 0, foundpath)
+#    walker([startpos], 'E', 'E', newpos, (0,1), 0, foundpath)
     #walker([startpos], 'E', 'E', newpos, (1,0), 0, foundpath)
     #walker([startpos], 'E', 'E', newpos, (-1,0), 0, foundpath)
     #walker([startpos], 'E', 'E', newpos, (0,-1), 0, foundpath)
@@ -264,11 +264,11 @@ print(len(foundpath))
 
 print("Now dijkstra")
 
-print(paths)
-pathlen = [len(i) for i in paths]
-print(min(pathlen))
-print(ways)
-printMap(foundpath)
+#print(paths)
+#pathlen = [len(i) for i in paths]
+#print(min(pathlen))
+#print(ways)
+#printMap(foundpath)
 edges = {} 
 
 def isAllowed(a, b):
@@ -308,14 +308,28 @@ def searchpath(inpath):
                 edges[target] = []
             edges[target].append(edge)
 
-visited.append(startpos)
-#allpath = [startpos]
-#for x in range(0, len(lines)):
-#    for y in range(0, len(lines[x])):
-#        allpath.append((x, y))
-#print(allpath)
-for path in paths:
-    searchpath(path)
+#visited.append(startpos)
+allpath = [startpos]
+for x in range(0, len(lines)):
+    for y in range(0, len(lines[x])):
+        allpath.append((x, y))
+print(allpath)
+
+# build complete path
+
+def buildPath(startpos, distance = 0):
+    mpath = []
+    edges = getEdges(startpos, distance, allpath)
+    mpath.append(edges)
+    for edge in edges:
+        nedges = getEdges(edge, distance + 1, visited)
+        mpath.append(edges)
+    return mpath
+
+mpath = buildPath(startpos, 0)
+print('got mpath')
+
+searchpath(mpath)
 
 opath = []
 print(edges)
