@@ -87,7 +87,7 @@ def walker(path, prefix, curletter, curpos, direction):
             minpath = len(path)
         return True 
 
-    elif (curletter == 'E' and newletter == 'z') or newletter <= curletter and abs(ord(newletter) - ord(curletter)) <= 1:
+    elif (curletter == 'E' and newletter == 'z') or newletter <= curletter and abs(ord(newletter) - ord(curletter)) <= 1 or newletter < curletter:
         print(prefix)
         #print("Found higher letter")
         prefix += newletter 
@@ -156,8 +156,8 @@ print(ways)
 for way in ways:
     print(len(way))
 
+printMap()
 print(paths)
 pathlen = [len(i) for i in paths]
 print(min(pathlen))
 print(ways)
-printMap()
