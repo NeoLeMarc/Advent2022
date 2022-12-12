@@ -5,6 +5,31 @@ ways = []
 paths = []
 minpath = 0
 deadends = []
+visited = []
+
+def printMap():
+    global lines
+
+    class bcolors:
+        HEADER = '\033[95m'
+        OKBLUE = '\033[94m'
+        OKCYAN = '\033[96m'
+        OKGREEN = '\033[92m'
+        WARNING = '\033[93m'
+        FAIL = '\033[91m'
+        ENDC = '\033[0m'
+        BOLD = '\033[1m'
+        UNDERLINE = '\033[4m'
+
+    ## Draw a map
+    for i in range(0, len(lines)):
+        out = ""
+        for j in range(0, len(lines[0])):
+            if (i, j) in visited:
+                out += bcolors.OKGREEN + lines[i][j] + bcolors.ENDC
+            else:
+                out += bcolors.FAIL + lines[i][j] + bcolors.ENDC
+        print(out) 
 
 def printDebug(path, prefix, curletter, curpos, newpos, direction):
     print("Path: %s" % path)
@@ -16,6 +41,9 @@ def printDebug(path, prefix, curletter, curpos, newpos, direction):
 
 
 def walker(path, prefix, curletter, curpos, direction):
+    global visited
+    if curpos not in visited:
+        visited.append(curpos)
     global deadends
     if curpos in deadends:
         print("Hit a deadend, exiting")
@@ -105,6 +133,7 @@ def walker(path, prefix, curletter, curpos, direction):
     else:
         # Path ends here
         print("End of path")
+        printDebug(path, prefix, curletter, curpos, newpos, direction)
         return False
 
 with open(sys.argv[1], "r") as infile:
@@ -125,9 +154,10 @@ walker([startpos], 'E', 'E', newpos, (0,-1))
 print(ways)
 
 for way in ways:
-    print(len(way) + 1)
+    print(len(way))
 
 print(paths)
 pathlen = [len(i) for i in paths]
 print(min(pathlen))
 print(ways)
+printMap()
