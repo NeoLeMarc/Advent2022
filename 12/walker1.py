@@ -8,7 +8,7 @@ minpath = 0
 deadends = []
 visited = []
 
-def printMap():
+def printMap(path):
     global lines
 
     class bcolors:
@@ -26,8 +26,10 @@ def printMap():
     for i in range(0, len(lines)):
         out = ""
         for j in range(0, len(lines[0])):
-            if (i, j) in visited:
+            if (i, j) in path:
                 out += bcolors.OKGREEN + lines[i][j] + bcolors.ENDC
+            elif (i, j) in visited:
+                out += bcolors.OKBLUE + lines[i][j] + bcolors.ENDC
             else:
                 out += bcolors.FAIL + lines[i][j] + bcolors.ENDC
         print(out) 
@@ -157,8 +159,8 @@ print(ways)
 for way in ways:
     print(len(way))
 
-printMap()
 print(paths)
 pathlen = [len(i) for i in paths]
 print(min(pathlen))
 print(ways)
+printMap(paths[0])
