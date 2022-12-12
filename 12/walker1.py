@@ -7,6 +7,7 @@ paths = []
 minpath = 0
 deadends = []
 visited = []
+showcount = 0 
 
 def printMap(path):
     global lines
@@ -35,6 +36,7 @@ def printMap(path):
         print(out) 
 
 def printDebug(path, prefix, curletter, curpos, newpos, direction):
+    return
     print("Path: %s" % path)
     print("Prefix: %s" % prefix)
     print("Curletter: %s" % curletter)
@@ -43,15 +45,15 @@ def printDebug(path, prefix, curletter, curpos, newpos, direction):
     print("Direction: %s" % str(direction))
 
 
-def walker(path, prefix, curletter, curpos, direction):
+def walker(path, prefix, curletter, curpos, direction, greedy):
     global visited
     if curpos not in visited:
         visited.append(curpos)
     global deadends
-    #if curpos in deadends:
-    #    print("Hit a deadend, exiting")
-    #    print("\nwalker(%s, %s, %s, %s, %s)" % (str(path), prefix, curletter, str(curpos), str(direction)))
-    #    return False
+    if greedy and curpos in deadends:
+        print("Hit a deadend, exiting")
+        print("\nwalker(%s, %s, %s, %s, %s)" % (str(path), prefix, curletter, str(curpos), str(direction)))
+        return False
     path = copy.copy(path)
     global ways
     global paths
@@ -63,10 +65,10 @@ def walker(path, prefix, curletter, curpos, direction):
  
 
     if newpos[0] < 0 or newpos[0] >= len(lines):
-        print("Outside grid")
+        #print("Outside grid")
         return False #  Outside of grid
     elif newpos[1] < 0 or newpos[1]  >= len(lines[0]):
-        print("Outside grid")
+        #print("Outside grid")
         return False # Outside of grid
 
 
@@ -84,14 +86,17 @@ def walker(path, prefix, curletter, curpos, direction):
         prefix += newletter
         paths.append(path)
         ways.append(prefix)
-        print("End found")
+        #print("End found")
         if minpath == 0 or len(path) <= minpath:
             print("Minpath: %i" % minpath)
             minpath = len(path)
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
+        printMap(path)
+ 
         return True 
 
     elif (curletter == 'E' and newletter == 'z') or abs(ord(newletter) - ord(curletter)) <= 1 or curletter != 'E' and (ord(newletter) > ord(curletter)):
-        print(prefix)
+        #print(prefix)
         #print("Found higher letter")
         prefix += newletter 
         curletter = newletter
@@ -118,25 +123,32 @@ def walker(path, prefix, curletter, curpos, direction):
             # Shortcut found
             return True
         else:
-            print("No shortcut")
+            pass
+            #print("No shortcut")
 
 
         # Move in all possible directions
-        if walker(path, prefix, curletter, newpos, (0, -1)) or \
-                walker(path, prefix, curletter, newpos, (-1, 0)) or \
-                walker(path, prefix, curletter, newpos, (0, 1)) or \
-                walker(path, prefix, curletter, newpos, (1, 0)):
+        if walker(path, prefix, curletter, newpos, (0, -1), greedy) or \
+                walker(path, prefix, curletter, newpos, (-1, 0), greedy) or \
+                walker(path, prefix, curletter, newpos, (0, 1), greedy) or \
+                walker(path, prefix, curletter, newpos, (1, 0), greedy):
                     return True
         else:
             # Hit a deadend
-            print("Found deadend")
-            printDebug(path, prefix, curletter, curpos, newpos, direction)
+            #print("Found deadend")
+            #printDebug(path, prefix, curletter, curpos, newpos, direction)
             deadends.append(newpos)
             return False
     else:
         # Path ends here
-        print("End of path")
-        printDebug(path, prefix, curletter, curpos, newpos, direction)
+        #print("End of path")
+        global showcount
+        showcount += 1 
+        showcount = showcount % 10000
+        if showcount == 1:
+            print("****************************")
+            printMap(path)
+        #printDebug(path, prefix, curletter, curpos, newpos, direction)
         return False
 
 with open(sys.argv[1], "r") as infile:
@@ -150,11 +162,21 @@ print(lines[startpos[0]][startpos[1]])
 print("Minpath try: %i" % minpath)
 newpos = startpos
 
-walker([startpos], 'E', 'E', newpos, (1,0))
-walker([startpos], 'E', 'E', newpos, (0,1))
-walker([startpos], 'E', 'E', newpos, (-1,0))
-walker([startpos], 'E', 'E', newpos, (0,-1))
+# Start greedy
+walker([startpos], 'E', 'E', newpos, (0,1), True)
+walker([startpos], 'E', 'E', newpos, (1,0), True)
+walker([startpos], 'E', 'E', newpos, (-1,0), True)
+walker([startpos], 'E', 'E', newpos, (0,-1), True)
 print(ways)
+
+# Thorough
+walker([startpos], 'E', 'E', newpos, (0,1), False)
+walker([startpos], 'E', 'E', newpos, (1,0), False)
+walker([startpos], 'E', 'E', newpos, (-1,0), False)
+walker([startpos], 'E', 'E', newpos, (0,-1), False)
+print(ways)
+
+
 
 for way in ways:
     print(len(way))
