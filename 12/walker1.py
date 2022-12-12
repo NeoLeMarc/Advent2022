@@ -54,7 +54,7 @@ def walker(path, prefix, curletter, curpos, direction):
     global ways
     global paths
     global minpath
-    if minpath > 0 and len(path) + 1 >= minpath:
+    if minpath > 0 and len(path) + 10 >= minpath:
         print("Already found shorter path, exiting")
         return False
     newpos = (curpos[0] + direction[0], curpos[1] + direction[1])
@@ -88,7 +88,7 @@ def walker(path, prefix, curletter, curpos, direction):
             minpath = len(path)
         return True 
 
-    elif (curletter == 'E' and newletter == 'z') or newletter <= curletter and abs(ord(newletter) - ord(curletter)) <= 1 or newletter < curletter:
+    elif (curletter == 'E' and newletter == 'z') or abs(ord(newletter) - ord(curletter)) <= 1 or curletter != 'E' and (ord(newletter) > ord(curletter)):
         print(prefix)
         #print("Found higher letter")
         prefix += newletter 
