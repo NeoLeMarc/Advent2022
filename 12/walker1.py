@@ -12,7 +12,7 @@ def walker(path, prefix, curletter, curpos, direction):
     global paths
     global minpath
     if minpath > 0 and len(path) + 1 >= minpath:
-        print("Already found shorter path, exiting")
+#        print("Already found shorter path, exiting")
         return False
     newpos = (curpos[0] + direction[0], curpos[1] + direction[1])
  
@@ -75,9 +75,14 @@ with open(sys.argv[1], "r") as infile:
     lines = infile.read().splitlines()
 
 print("Start")
-walker([(0,0)], 'S', 'a', (0, 0), (1,0))
-walker([(0,0)], 'S', 'a', (0, 0), (0,1))
-print(ways)
+
+minpath = 10
+while len(ways) == 0:
+    minpath += 1
+    print("Minpath try: %i" % minpath)
+    walker([(0,0)], 'S', 'a', (0, 0), (1,0))
+    walker([(0,0)], 'S', 'a', (0, 0), (0,1))
+    print(ways)
 
 for way in ways:
     print(len(way) + 1)
