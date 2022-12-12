@@ -4,6 +4,7 @@ lines = ""
 ways = []
 paths = []
 minpath = 0
+deadends = []
 
 def walker(path, prefix, curletter, curpos, direction):
     path = copy.copy(path)
@@ -52,11 +53,36 @@ def walker(path, prefix, curletter, curpos, direction):
             minpath = len(path)
         return True 
 
-    elif curletter == 'E' or newletter == 'E' or newletter <= curletter and abs(ord(newletter) - ord(curletter)) <= 1:
-        #print(prefix)
+    elif (curletter == 'E' and newletter == 'z') or newletter <= curletter and abs(ord(newletter) - ord(curletter)) <= 1:
+        print(prefix)
         #print("Found higher letter")
         prefix += newletter 
         curletter = newletter
+
+        # Greedy optimization: if we find a lower letter, continue on that avenue
+        newpos_x = newpos[0]
+        newpos_y = newpos[0]
+
+        res = False
+        if lines[max(newpos_x - 1, 0)][newpos_y] < curletter:
+            print("Go down")
+            res = walker(path, prefix, curletter, newpos, (-1, 0))
+        elif lines[min(newpos_x + 1, len(lines))][newpos_y] < curletter:
+            print("Go up")
+            res = walker(path, prefix, curletter, newpos, (1, 0))
+        elif lines[newpos_x][max(newpos_y - 1), 0] < curletter:
+            print("Go left")
+            res = walker(path, prefix, curletter, newpos, (0, -1))
+        elif lines[newpos_x][min(newpos_y + 1), len(lines[0])] < curletter:
+            print("Go right")
+            res = walker(path, prefix, curletter, newpos, (0, 1))
+
+        if res:
+            # Shortcut found
+            return True
+        else:
+            print("No shortcut")
+
 
         # Move in all possible directions
         if walker(path, prefix, curletter, newpos, (0, -1)) or \
