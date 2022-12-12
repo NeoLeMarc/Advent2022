@@ -66,20 +66,20 @@ def walker(path, prefix, curletter, curpos, direction):
         curletter = newletter
 
         # Greedy optimization: if we find a lower letter, continue on that avenue
-        newpos_x = newpos[0]
-        newpos_y = newpos[0]
+        newpos_x = max(min(newpos[0], len(lines) - 1), 0)
+        newpos_y = max(min(newpos[0], len(lines[0]) - 1), 0)
 
         res = False
         if lines[max(newpos_x - 1, 0)][newpos_y] < curletter:
             print("Go down")
             res = walker(path, prefix, curletter, newpos, (-1, 0))
-        elif lines[min(newpos_x + 1, len(lines))][newpos_y] < curletter:
+        elif lines[min(newpos_x + 1, len(lines) - 1)][newpos_y] < curletter:
             print("Go up")
             res = walker(path, prefix, curletter, newpos, (1, 0))
-        elif lines[newpos_x][max(newpos_y - 1), 0] < curletter:
+        elif lines[newpos_x][max(newpos_y - 1, 0)] < curletter:
             print("Go left")
             res = walker(path, prefix, curletter, newpos, (0, -1))
-        elif lines[newpos_x][min(newpos_y + 1), len(lines[0])] < curletter:
+        elif lines[newpos_x][min(newpos_y + 1, len(lines[0]))] < curletter:
             print("Go right")
             res = walker(path, prefix, curletter, newpos, (0, 1))
 
