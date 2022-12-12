@@ -41,7 +41,7 @@ def walker(path, prefix, curletter, curpos, direction):
 
     path.append(newpos)
 
-    if newletter == 'E':
+    if newletter == 'S':
         # possible way found
         prefix += newletter
         paths.append(path)
@@ -52,7 +52,7 @@ def walker(path, prefix, curletter, curpos, direction):
             minpath = len(path)
         return True 
 
-    elif newletter == 'S' or newletter >= curletter and abs(ord(newletter) - ord(curletter)) <= 1:
+    elif newletter == 'E' or newletter <= curletter and abs(ord(newletter) - ord(curletter)) <= 1:
     #    print(prefix)
     #    print("Found higher letter")
         prefix += newletter 
@@ -76,15 +76,17 @@ with open(sys.argv[1], "r") as infile:
 
 print("Start")
 
-minpath = 10
-while len(ways) == 0:
-    minpath += 1
-    print("Minpath try: %i" % minpath)
-    walker([(0,0)], 'S', 'a', (0, 0), (1,0))
-    walker([(0,0)], 'S', 'a', (0, 0), (0,1))
-    print(ways)
+print(lines[20][158])
+minpath = 1000
+print("Minpath try: %i" % minpath)
+walker([(20,158)], 'E', 'a', (0, 0), (1,0))
+walker([(20,158)], 'E', 'a', (0, 0), (0,1))
+print(ways)
 
 for way in ways:
     print(len(way) + 1)
 
 print(paths)
+pathlen = [len(i) for i in paths]
+print(min(pathlen))
+print(ways)
