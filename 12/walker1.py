@@ -293,7 +293,10 @@ searchpath(foundpath)
 opath = []
 print(edges)
 found = False
-candidateedges = edges[(20,0)]
+print(sys.argv)
+tpos = (int(sys.argv[4]), int(sys.argv[5]))
+print("Tpos: %s" % str(tpos))
+candidateedges = edges[tpos]
 minl = 9999
 seen = []
 while not found:
@@ -322,3 +325,5 @@ while not found:
 print(opath)
 printMap(opath)
 print(len(opath))
+sys.stdout.flush()
+print("The End!")
