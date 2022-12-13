@@ -122,11 +122,14 @@ with open(sys.argv[1], 'r') as infile:
 print(inlist)
 from functools import cmp_to_key
 slist = sorted(inlist, key=cmp_to_key(compareList))
+codekey = 1
 for i in range(0, len(slist)):
     value = slist[i]
     print(value)
     if value in ([[6]], [[2]]):
         print("*** Delimiter found at %i: %s" % (i, slist[i]))
+        codekey *= (i + 1)
+print("Codekey: %i" % codekey)
 #i = 1 
 #tsum = 0
 #for pair in inp:
