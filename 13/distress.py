@@ -119,10 +119,16 @@ with open(sys.argv[1], 'r') as infile:
         in2 = infile.readline()
 
 i = 0 
+tsum = 0
 for pair in inp:
     print("Pair (%i): %s" % (i, str(pair)))
     value = compareList(pair)
     print(value)
     print("-----------------------")
+
+    if value == YES:
+        tsum += i
+        print("Incrementing tsum, is now: %i" % tsum)
     sys.stdout.flush()
     i += 1
+print("Tsum is: %i" % tsum)
