@@ -94,6 +94,10 @@ def compareList(pair):
             else:
                 print("Value is: %i" % value)
                 return value
+    elif len(a) > 0 and len(b) <= 0:
+        return  NO
+    elif len(b) > 0 and len(a) <= 0:
+        return YES 
     else:
         # that does not seem right
         print("going to next element")
