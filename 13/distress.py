@@ -76,7 +76,7 @@ def compareList(pair):
                 try:
                     b[i]
                     print("A ran out of items")
-                    return NO
+                    return YES 
                 except(IndexError):
                     print("Both ran out of items")
                     return CONTINUE
@@ -85,7 +85,7 @@ def compareList(pair):
                 b[i]
             except(IndexError):
                 print("B ran out of items")
-                return YES
+                return NO
 
             value = compareValue(a[i], b[i])
             if value == CONTINUE:
@@ -97,10 +97,10 @@ def compareList(pair):
     else:
         if len(a) > len(b):
             print("b is empty")
-            return YES
+            return NO 
         else:
             print("a is empty")
-            return NO
+            return YES 
 
 with open(sys.argv[1], 'r') as infile:
     in1 = infile.readline()
@@ -118,9 +118,11 @@ with open(sys.argv[1], 'r') as infile:
         in1 = infile.readline()
         in2 = infile.readline()
 
+i = 0 
 for pair in inp:
-    print("Pair: %s" % str(pair))
+    print("Pair (%i): %s" % (i, str(pair)))
     value = compareList(pair)
     print(value)
     print("-----------------------")
     sys.stdout.flush()
+    i += 1
