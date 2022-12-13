@@ -95,12 +95,9 @@ def compareList(pair):
                 print("Value is: %i" % value)
                 return value
     else:
-        if len(a) > len(b):
-            print("b is empty")
-            return NO 
-        else:
-            print("a is empty")
-            return YES 
+        # that does not seem right
+        print("going to next element")
+        return CONTINUE
 
 with open(sys.argv[1], 'r') as infile:
     in1 = infile.readline()
@@ -118,7 +115,7 @@ with open(sys.argv[1], 'r') as infile:
         in1 = infile.readline()
         in2 = infile.readline()
 
-i = 0 
+i = 1 
 tsum = 0
 for pair in inp:
     print("Pair (%i): %s" % (i, str(pair)))
