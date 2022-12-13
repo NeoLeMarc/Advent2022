@@ -44,12 +44,12 @@ def compareValue(a, b):
         #    print("CONTINUE 1")
         #    return CONTINUE
     elif type(a) == type([]) and type(b) == type(int()):
-         # if exactly one value is an integer, convert the integer to a list, then retry
+         # if *exactly* one value is an integer, convert the integer to a list, then retry
          print("Mixed types, converting b to list")
          b = [b]
          return compareValue(a, b)
     elif type(b) == type([]) and type(a) == type(int()):
-        # if exactly one value is an integer, convert the integer to a list, then retry
+        # if *exactly* one value is an integer, convert the integer to a list, then retry
         print("Mixed types, converting a to list")
         a = [a]
         return compareValue(a, b)
@@ -123,13 +123,20 @@ i = 1
 tsum = 0
 for pair in inp:
     print("Pair (%i): %s" % (i, str(pair)))
+    print("A = %s" % pair[0])
+    print("B = %s" % pair[1])
+    print("**") 
     value = compareList(pair)
-    print(value)
     print("-----------------------")
 
     if value == YES:
         tsum += i
         print("Incrementing tsum, is now: %i" % tsum)
+    elif value == NO:
+        print("Not incrementing")
+    else:
+        raise Exception("Unexpected return")
     sys.stdout.flush()
     i += 1
+    print("********************************************************")
 print("Tsum is: %i" % tsum)
