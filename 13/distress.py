@@ -30,22 +30,27 @@ def compareValue(a, b):
             print("CONTINUE")
             return CONTINUE
     elif type(a) == type([]) and type(b) == type([]):
+        print("Delegating to compare lists")
+        return compareList((a, b))
         # if both values are lists:
-        if len(a) < len(b):
-            # if left is shorter, inputs are in right order
-            return YES
-        elif len(b) > len(a):
-            # if right is shorter, inputs re not in right order
-            return NO
-        else:
-            # continue checking the next part of the input
-            return CONTINUE
+        #if len(a) < len(b):
+        #    # if left is shorter, inputs are in right order
+        #    return YES
+        #elif len(b) > len(a):
+        #    # if right is shorter, inputs re not in right order
+        #    return NO
+        #else:
+        #    # continue
+        #    print("CONTINUE 1")
+        #    return CONTINUE
     elif type(a) == type([]) and type(b) == type(int()):
          # if exactly one value is an integer, convert the integer to a list, then retry
+         print("Mixed types, converting b to list")
          b = [b]
          return compareValue(a, b)
     elif type(b) == type([]) and type(a) == type(int()):
         # if exactly one value is an integer, convert the integer to a list, then retry
+        print("Mixed types, converting a to list")
         a = [a]
         return compareValue(a, b)
     elif len(a) > 1 and len(b) > 1:
@@ -68,8 +73,13 @@ def compareList(pair):
             try:
                 a[i]
             except(IndexError):
-                print("A ran out of items")
-                return NO
+                try:
+                    b[i]
+                    print("A ran out of items")
+                    return NO
+                except(IndexError):
+                    print("Both ran out of items")
+                    return CONTINUE
 
             try:
                 b[i]
