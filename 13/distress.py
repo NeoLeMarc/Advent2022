@@ -55,6 +55,7 @@ def compareValue(a, b):
         print("Not implemented")
         print(type(a))
         print(type(b))
+        sys.stdout.flush()
         raise Exception("Not implemented")
 
 def compareList(pair):
@@ -64,6 +65,18 @@ def compareList(pair):
     if len(a) > 0 and len(b) > 0:
         value = CONTINUE
         while value == CONTINUE:
+            try:
+                a[i]
+            except(IndexError):
+                print("A ran out of items")
+                return NO
+
+            try:
+                b[i]
+            except(IndexError):
+                print("B ran out of items")
+                return YES
+
             value = compareValue(a[i], b[i])
             if value == CONTINUE:
                 print("Got CONTINUE")
@@ -72,7 +85,12 @@ def compareList(pair):
                 print("Value is: %i" % value)
                 return value
     else:
-        raise Exception("Got empty list")
+        if len(a) > len(b):
+            print("b is empty")
+            return YES
+        else:
+            print("a is empty")
+            return NO
 
 with open(sys.argv[1], 'r') as infile:
     in1 = infile.readline()
@@ -93,5 +111,6 @@ with open(sys.argv[1], 'r') as infile:
 for pair in inp:
     print("Pair: %s" % str(pair))
     value = compareList(pair)
+    print(value)
     print("-----------------------")
     sys.stdout.flush()
