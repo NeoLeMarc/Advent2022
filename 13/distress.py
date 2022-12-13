@@ -40,6 +40,14 @@ def compareValue(a, b):
         else:
             # continue checking the next part of the input
             return CONTINUE
+    elif type(a) == type([]) and type(b) == type(int()):
+         # if exactly one value is an integer, convert the integer to a list, then retry
+         b = [b]
+         return compareValue(a, b)
+    elif type(b) == type([]) and type(a) == type(int()):
+        # if exactly one value is an integer, convert the integer to a list, then retry
+        a = [a]
+        return compareValue(a, b)
     elif len(a) > 1 and len(b) > 1:
         print("Not implemented")
         raise Exception("Not implemented")
