@@ -24,26 +24,26 @@ for line in lines:
             min_x = x
 
         if x > max_x:
-            max_x = x
+            max_x = x + 1
 
         if y < min_y:
             min_y = y
 
         if y > max_y:
-            max_y = y 
+            max_y = y + 1 
         pathElement = (x, y)
         path.append(pathElement)
     paths.append(path)
 
-print("%s %s / %s %s" % (min_x, max_x, min_y, max_y))
+#print("%s %s / %s %s" % (min_x, max_x, min_y, max_y))
 
 cave = []
 
 # Iinitialize cave
 def initializeCave(cave):
-    for x in range(0, max_x + 1):
+    for x in range(0, max_x + 2):
         cave.append([])
-        for y in range(0, max_y + 1):
+        for y in range(0, max_y + 2):
             cave[x].append('.')
 
 initializeCave(cave)
@@ -51,11 +51,12 @@ initializeCave(cave)
 for path in paths:
     prevpoint = None
     for point in path:
-        print(point)
+        #print(point)
         ## needs improvement
         if prevpoint:
-            for x in range(prevpoint[0], point[0] + 1):
-                for y in range(prevpoint[1], point[1] + 1):
+            for x in range(min(prevpoint[0], point[0] + 1), max(prevpoint[0], point[0] + 1)):
+                for y in range(min(prevpoint[1], point[1] + 1), max(prevpoint[1], point[1] + 1)):
+                    print(x, y)
                     cave[x][y] = '#'
         prevpoint = point
 
