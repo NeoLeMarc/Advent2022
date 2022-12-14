@@ -64,7 +64,8 @@ for path in paths:
 
 
 ## Add source of sand
-cave[0][500] = '+'
+sandSource = (0, 500)
+cave[sandSource[0]][sandSource[1]] = '+'
 
 print("%i - %i" % (min_x, max_x))
 print("%i - %i" % (min_y, max_y))
@@ -78,4 +79,53 @@ def printCave(cave):
         print(line)
 
 printCave(cave)
-print(cave[0][495:505])
+
+import copy
+sandCave = copy.copy(cave)
+
+sandPos = None
+
+# Sand moves down, than one step down and to the left and then one step down and to the right
+
+def sandIsResting(cave):
+    global sandPos
+    if sandPos == None:
+        return True
+    else:
+        return False 
+
+def moveDown(cave):
+    global sandPos
+    cave[sandPos[0]][sandPos[1]] = '.'
+    cave[sandPos[0] + 1][sandPos[1]] = 'o'
+    sandPos = (sandPos[0] + 1, sandPos[1])
+ 
+
+def moveSand(cave):
+    global sandPos
+    # Sand moves down:
+    if cave[sandPos[0] + 1][sandPos[1]] not in ('#', 'o'):
+        moveDown(cave)
+    else:
+        print("Hit bottom")
+    return True
+
+def addSand(cave):
+    global sandPos
+    if cave[sandSource[0] + 1][sandSource[1]] != '.':
+        raise Exception("Sand overflow")
+    else:
+        cave[sandSource[0] + 1][sandSource[1]]  = 'o'
+        sandPos = (sandSource[0] + 1, sandSource[1])
+
+def updateSand(cave):
+    print(sandPos)
+    if sandIsResting(cave):
+        addSand(cave)
+    else:
+        moveSand(cave)
+
+for i in range(0, 15):
+    print("---------------")
+    updateSand(sandCave)
+    printCave(sandCave)
