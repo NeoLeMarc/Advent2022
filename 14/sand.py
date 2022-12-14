@@ -48,6 +48,7 @@ def initializeCave(cave):
 
 initializeCave(cave)
 
+## Add rock structure
 for path in paths:
     prevpoint = None
     for point in path:
@@ -61,15 +62,20 @@ for path in paths:
         prevpoint = point
         print("-------------")
 
+
+## Add source of sand
+cave[0][500] = '+'
+
 print("%i - %i" % (min_x, max_x))
 print("%i - %i" % (min_y, max_y))
 def printCave(cave):
-    for x in range(min_x - 10, max_x + 10):
+    for x in range(0, max_x):
         line = ""
-        for y in range(min_y - 20, max_y + 20):
-            if x > 0 and len(cave) > x:
-                if y > 0 and len(cave[x]) > y:
+        for y in range(min_y, max_y + 1):
+            if x >= 0 and len(cave) > x:
+                if y >= 0 and len(cave[x]) > y:
                     line += cave[x][y]
         print(line)
 
 printCave(cave)
+print(cave[0][495:505])
