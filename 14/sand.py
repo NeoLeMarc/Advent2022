@@ -100,15 +100,30 @@ def moveDown(cave):
     cave[sandPos[0] + 1][sandPos[1]] = 'o'
     sandPos = (sandPos[0] + 1, sandPos[1])
  
+def moveDownLeft(cave):
+    global sandPos
+    cave[sandPos[0]][sandPos[1]] = '.'
+    cave[sandPos[0] + 1][sandPos[1] - 1] = 'o'
+    sandPos = (sandPos[0] + 1, sandPos[1] - 1)
+
+def moveDownRight(cave):
+    global sandPos
+    cave[sandPos[0]][sandPos[1]] = '.'
+    cave[sandPos[0] + 1][sandPos[1] + 1] = 'o'
+    sandPos = (sandPos[0] + 1, sandPos[1] + 1)
 
 def moveSand(cave):
     global sandPos
     # Sand moves down:
     if cave[sandPos[0] + 1][sandPos[1]] not in ('#', 'o'):
         moveDown(cave)
+    elif cave[sandPos[0] + 1][sandPos[1] - 1] not in ('#', 'o'):
+        moveDownLeft(cave)
+    elif cave[sandPos[0] + 1][sandPos[1] + 1] not in ('#', 'o'):
+        moveDownRight(cave)
     else:
-        print("Hit bottom")
-    return True
+        # sand is resting
+        sandPos = None
 
 def addSand(cave):
     global sandPos
