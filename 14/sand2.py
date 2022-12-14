@@ -21,16 +21,16 @@ for line in lines:
         y = int(y)
 
         if x < min_x:
-            min_x = x
+            min_x = x - 40
 
         if x > max_x:
-            max_x = x
+            max_x = x 
 
         if y < min_y:
             min_y = y 
 
         if y > max_y:
-            max_y = y 
+            max_y = y + 1400 
         pathElement = (x, y)
         path.append(pathElement)
     paths.append(path)
@@ -41,11 +41,17 @@ cave = []
 
 # Iinitialize cave
 def initializeCave(cave):
-    for x in range(0, max_x + 10):
+    for x in range(0, max_x + 2):
         cave.append([])
         for y in range(0, max_y + 10):
             cave[x].append('.')
+    ## Add floor at bottom
+    cave.append([])
+    cave.append([])
 
+    for y in range(0, max_y + 10):
+        cave[max_x + 2].append('#')
+     
 initializeCave(cave)
 
 ## Add rock structure
@@ -141,11 +147,13 @@ def moveSand(cave):
 def addSand(cave):
     global sandPos
     global sandCornNr
-    if cave[sandSource[0] + 1][sandSource[1]] != '.':
-        raise Exception("Sand overflow")
+    if cave[sandSource[0] + 1][sandSource[1]] != '.' and cave[sandSource[0] + 1][sandSource[1] - 1] != '.' and cave[sandSource[0] + 1][sandSource[1] + 1] != '.' :
+        printCave(sandCave)
+        sys.stdout.flush()
+        raise Exception("Overflow after adding %i corns of sand" % sandCornNr)
     else:
-        cave[sandSource[0] + 1][sandSource[1]]  = 'o'
-        sandPos = (sandSource[0] + 1, sandSource[1])
+        cave[sandSource[0]][sandSource[1]]  = 'o'
+        sandPos = (sandSource[0], sandSource[1])
         sandCornNr += 1
 
 def updateSand(cave):
@@ -160,10 +168,10 @@ import os
 while True:
     #print("---------------")
     updateSand(sandCave)
-    drawCount = (drawCount + 1) % 1000
+    drawCount = (drawCount + 1) % 10000
     if drawCount == 1:
-        #os.system("clear")
+        os.system("clear")
         printCave(sandCave)
         import time
-        #time.sleep(1)
-    checkAbyss(sandCave)
+        #time.sleep(0.1)
+    #checkAbyss(sandCave)
