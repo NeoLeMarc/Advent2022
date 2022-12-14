@@ -16,18 +16,18 @@ for line in lines:
     spath = line.split(" -> ")
     path = []
     for p in spath:
-        x, y = p.split(',')
+        y, x = p.split(',')
         x = int(x)
         y = int(y)
 
         if x < min_x:
-            min_x = x
+            min_x = x - 1
 
         if x > max_x:
             max_x = x + 1
 
         if y < min_y:
-            min_y = y
+            min_y = y - 1
 
         if y > max_y:
             max_y = y + 1 
@@ -51,22 +51,25 @@ initializeCave(cave)
 for path in paths:
     prevpoint = None
     for point in path:
-        #print(point)
+        print(point)
         ## needs improvement
         if prevpoint:
-            for x in range(min(prevpoint[0], point[0] + 1), max(prevpoint[0], point[0] + 1)):
-                for y in range(min(prevpoint[1], point[1] + 1), max(prevpoint[1], point[1] + 1)):
+            for x in range(min(prevpoint[0], point[0]), max(prevpoint[0], point[0]) + 1):
+                for y in range(min(prevpoint[1], point[1]), max(prevpoint[1], point[1]) + 1):
                     print(x, y)
                     cave[x][y] = '#'
         prevpoint = point
+        print("-------------")
 
 print("%i - %i" % (min_x, max_x))
 print("%i - %i" % (min_y, max_y))
 def printCave(cave):
-    for x in range(min_x, max_x + 1):
+    for x in range(min_x - 10, max_x + 10):
         line = ""
-        for y in range(min_y, max_y + 1):
-            line += cave[x][y]
+        for y in range(min_y - 20, max_y + 20):
+            if x > 0 and len(cave) > x:
+                if y > 0 and len(cave[x]) > y:
+                    line += cave[x][y]
         print(line)
 
 printCave(cave)
