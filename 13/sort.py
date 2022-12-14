@@ -31,7 +31,7 @@ def compareValue(a, b):
             return CONTINUE
     elif type(a) == type([]) and type(b) == type([]):
         print("Delegating to compare lists")
-        return compareList((a, b))
+        return compareList(a, b)
         # if both values are lists:
         #if len(a) < len(b):
         #    # if left is shorter, inputs are in right order
@@ -63,9 +63,7 @@ def compareValue(a, b):
         sys.stdout.flush()
         raise Exception("Not implemented")
 
-def compareList(pair):
-    a, b = pair
-
+def compareList(a, b):
     i = 0
     if len(a) > 0 and len(b) > 0:
         value = CONTINUE
@@ -103,6 +101,7 @@ def compareList(pair):
         print("going to next element")
         return CONTINUE
 
+inlist = [[[2]],[[6]]]
 with open(sys.argv[1], 'r') as infile:
     in1 = infile.readline()
     in2 = infile.readline()
@@ -115,28 +114,40 @@ with open(sys.argv[1], 'r') as infile:
             break
         exec(ini1)
         exec(ini2)
-        inp.append((a, b))
+        inlist.append(a)
+        inlist.append(b)
         in1 = infile.readline()
         in2 = infile.readline()
 
-i = 1 
-tsum = 0
-for pair in inp:
-    print("Pair (%i): %s" % (i, str(pair)))
-    print("A = %s" % pair[0])
-    print("B = %s" % pair[1])
-    print("**") 
-    value = compareList(pair)
-    print("-----------------------")
-
-    if value == YES:
-        tsum += i
-        print("Incrementing tsum, is now: %i" % tsum)
-    elif value == NO:
-        print("Not incrementing")
-    else:
-        raise Exception("Unexpected return")
-    sys.stdout.flush()
-    i += 1
-    print("********************************************************")
-print("Tsum is: %i" % tsum)
+print(inlist)
+from functools import cmp_to_key
+slist = sorted(inlist, key=cmp_to_key(compareList))
+codekey = 1
+for i in range(0, len(slist)):
+    value = slist[i]
+    print(value)
+    if value in ([[6]], [[2]]):
+        print("*** Delimiter found at %i: %s" % (i, slist[i]))
+        codekey *= (i + 1)
+print("Codekey: %i" % codekey)
+#i = 1 
+#tsum = 0
+#for pair in inp:
+#    print("Pair (%i): %s" % (i, str(pair)))
+#    print("A = %s" % pair[0])
+#    print("B = %s" % pair[1])
+#    print("**") 
+#    value = compareList(pair[0], pair[1])
+#    print("-----------------------")
+##
+#    if value == YES:
+#        tsum += i
+#        print("Incrementing tsum, is now: %i" % tsum)
+#    elif value == NO:
+#        print("Not incrementing")
+#    else:
+#        raise Exception("Unexpected return")
+#    sys.stdout.flush()
+#    i += 1
+#    print("********************************************************")
+#print("Tsum is: %i" % tsum)
