@@ -37,3 +37,26 @@ print("%s %s / %s %s" % (min_x, max_x, min_y, max_y))
 
 cave = []
 
+# Iinitialize cave
+def printCave(cave):
+    for x in range(0, max_x + 1):
+        for y in range(0, max_y + 1):
+            cave[x][y] = '.'
+
+for path in paths:
+    prevpoint = None
+    for point in path:
+        if prevpoint:
+            for x in range(prevpoint[0], point[0] + 1):
+                for y in range(prevpoint[1], point[1] + 1):
+                    cave[x][y] = '#'
+        prevpoint = path
+
+def printCave(cave):
+    for x in range(min_x, max_x + 1):
+        line = ""
+        for y in range(min_y, max_y + 1):
+            line += cave[x][y]
+        print(line)
+
+printCave(cave)
