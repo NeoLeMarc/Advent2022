@@ -41,9 +41,9 @@ cave = []
 
 # Iinitialize cave
 def initializeCave(cave):
-    for x in range(0, max_x + 2):
+    for x in range(0, max_x + 10):
         cave.append([])
-        for y in range(0, max_y + 2):
+        for y in range(0, max_y + 10):
             cave[x].append('.')
 
 initializeCave(cave)
@@ -70,9 +70,9 @@ cave[sandSource[0]][sandSource[1]] = '+'
 print("%i - %i" % (min_x, max_x))
 print("%i - %i" % (min_y, max_y))
 def printCave(cave):
-    for x in range(0, max_x + 1):
+    for x in range(0, max_x + 5):
         line = "%i " % x
-        for y in range(min_y, max_y + 1):
+        for y in range(min_y - 5, max_y + 5):
             if x >= 0 and len(cave) > x:
                 if y >= 0 and len(cave[x]) > y:
                     line += cave[x][y]
@@ -84,8 +84,16 @@ import copy
 sandCave = copy.copy(cave)
 
 sandPos = None
+sandCornNr = 0 
 
 # Sand moves down, than one step down and to the left and then one step down and to the right
+def checkAbyss():
+    if not sandPos:
+        return False
+    elif sandPos[0] >= max_x or sandPos[1] >= max_y:
+        raise Exception("Hit abyss after adding %i corns of sand" % sandCornNr)
+    else:
+        return False
 
 def sandIsResting(cave):
     global sandPos
@@ -115,6 +123,7 @@ def moveDownRight(cave):
 def moveSand(cave):
     global sandPos
     # Sand moves down:
+    print((sandPos[0], sandPos[1]))
     if cave[sandPos[0] + 1][sandPos[1]] not in ('#', 'o'):
         moveDown(cave)
     elif cave[sandPos[0] + 1][sandPos[1] - 1] not in ('#', 'o'):
@@ -127,11 +136,13 @@ def moveSand(cave):
 
 def addSand(cave):
     global sandPos
+    global sandCornNr
     if cave[sandSource[0] + 1][sandSource[1]] != '.':
         raise Exception("Sand overflow")
     else:
         cave[sandSource[0] + 1][sandSource[1]]  = 'o'
         sandPos = (sandSource[0] + 1, sandSource[1])
+        sandCornNr += 1
 
 def updateSand(cave):
     print(sandPos)
@@ -140,7 +151,8 @@ def updateSand(cave):
     else:
         moveSand(cave)
 
-for i in range(0, 15):
+for i in range(0, 400):
     print("---------------")
     updateSand(sandCave)
     printCave(sandCave)
+    checkAbyss()
