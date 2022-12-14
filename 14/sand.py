@@ -21,16 +21,16 @@ for line in lines:
         y = int(y)
 
         if x < min_x:
-            min_x = x - 1
+            min_x = x
 
         if x > max_x:
-            max_x = x + 1
+            max_x = x
 
         if y < min_y:
-            min_y = y - 1
+            min_y = y 
 
         if y > max_y:
-            max_y = y + 1 
+            max_y = y 
         pathElement = (x, y)
         path.append(pathElement)
     paths.append(path)
@@ -69,8 +69,8 @@ cave[0][500] = '+'
 print("%i - %i" % (min_x, max_x))
 print("%i - %i" % (min_y, max_y))
 def printCave(cave):
-    for x in range(0, max_x):
-        line = ""
+    for x in range(0, max_x + 1):
+        line = "%i " % x
         for y in range(min_y, max_y + 1):
             if x >= 0 and len(cave) > x:
                 if y >= 0 and len(cave[x]) > y:
