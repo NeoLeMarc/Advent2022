@@ -37,21 +37,24 @@ for line in lines:
     if beaconpos_x < minX:
         minX = beaconpos_x
 
+for lookY in range(0, 4000000):
+    freepositions = [1 for x in range(minX, maxX + 1)]
+    print("minX: %i -  maxX: %i" % (minX, maxX))
+    for pos in positions:
+        p, d0 = pos
+        print("Comparing to %s with d0 = %i" % (str(p[0]), d0))
 
-lookY = int(sys.argv[2]) 
-freepositions = [1 for x in range(minX, maxX + 1)]
-usedpositions = []
-print("minX: %i -  maxX: %i" % (minX, maxX))
-for pos in positions:
-    p, d0 = pos
-    print("Comparing to %s with d0 = %i" % (str(p[0]), d0))
+        for x in range(minX, maxX + 1):
+            d = manhattanDistance(p[0], (x, lookY))
+            if d <= d0:
+                #print("Removing: %s (%i < %i)" % (str((x, lookY)), d, d0))
+                #print((x, lookY))
+                freepositions[x - minX] = 0
 
-    for x in range(minX, maxX + 1):
-        d = manhattanDistance(p[0], (x, lookY))
-        if d <= d0:
-            #print("Removing: %s (%i < %i)" % (str((x, lookY)), d, d0))
-            #print((x, lookY))
-            freepositions[x - minX] = 0
-
-#print(freepositions)
-print(len(freepositions) - sum(freepositions))
+        if sum(freepositions) == 0:
+            print("Break")
+            break
+    
+    numfree = len(freepositions) - sum(freepositions)
+    if numfree > 0:
+        print(numfree)
