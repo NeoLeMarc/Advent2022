@@ -9,10 +9,10 @@ maxX = 0
 minX = 999999999999
 
 zoomlevel = int(sys.argv[2])
-zMinX = int(sys.argv[3])
-zMaxX = int(sys.argv[4])
-zMinY = int(sys.argv[5])
-zMaxY = int(sys.argv[6])
+zMinX = int(int(sys.argv[3])/zoomlevel)
+zMaxX = int(int(sys.argv[4])/zoomlevel)
+zMinY = int(int(sys.argv[5])/zoomlevel)
+zMaxY = int(int(sys.argv[6])/zoomlevel)
 
 def manhattanDistance(a, b):
     d = abs(a[0] - b[0]) + abs(a[1] - b[1])
@@ -43,30 +43,42 @@ for line in lines:
     if beaconpos_x < minX:
         minX = beaconpos_x
 
-targetY = int(zMinY/zoomlevel)
+targetY = int(zMaxY)
 
-for lookY in range(int(zMinY/zoomlevel), targetY):
-    freepositions = [1 for x in range(minX, maxX + 1)]
+print("X: %i - %i" % (zMinX, zMaxX))
+print("Y: %i - %i" % (zMinY, zMaxY))
+print("Target: %i" % targetY)
+
+print("From %i to %i" % (int(zMinY), targetY))
+
+for lookY in range(int(zMinY), targetY):
+    freepositions = [1 for x in range(int(zMinX), int(zMaxX) + 1)]
     #print("minX: %i -  maxX: %i" % (minX, maxX))
     for pos in positions:
         p, d0 = pos
         #print("Comparing to %s with d0 = %i" % (str(p[0]), d0))
 
-        for x in range(zMinX, zMaxX + 1):
+        for x in range(int(zMinX), int(zMaxX) + 1):
             d = manhattanDistance(p[0], (x, lookY))
-            if d <= d0:
+            if d > d0:
                 #print("Removing: %s (%i < %i)" % (str((x, lookY)), d, d0))
+                #print(d0)
                 #print((x, lookY))
-                freepositions[x - minX] = 0
+                freepositions[x - zMinX] = 0
+            else:
+                pass
+                #print("%i > %i" % (d, d0))
 
-        if sum(freepositions) == 0:
+        if sum(freepositions) > 0:
             print("Found")
             print("Break")
-            raise Exception("Found at Y: %i" % lookY * zoomlevel)
+            raise Exception("Found at lookY: %i" % (lookY * zoomlevel))
+            import time 
+            time.sleep(1)
             break
     
     numfree = len(freepositions) - sum(freepositions)
     if numfree > 0:
-        print(numfree)
+        print("Position %s: %i" % (str(pos), numfree))
 
     print("Done with %i of %i" % (lookY, targetY))
