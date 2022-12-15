@@ -72,6 +72,10 @@ for lookY in range(int(zMinY), targetY):
         if sum(freepositions) > 0:
             print("Found")
             print("Break")
+            ## Find xPos:
+            for x in range(0, len(freepositions)):
+                if freepositions[x] > 0:
+                    print("Hit at (%i, %i)" % ((x + zMinX) * zoomlevel, lookY * zoomlevel))
             raise Exception("Found at lookY: %i" % (lookY * zoomlevel))
             import time 
             time.sleep(1)
