@@ -52,34 +52,43 @@ print("Target: %i" % targetY)
 print("From %i to %i" % (int(zMinY), targetY))
 
 for lookY in range(int(zMinY), targetY):
-    freepositions = [1 for x in range(int(zMinX), int(zMaxX) + 1)]
+    freepositions = [0 for x in range(int(zMinX), int(zMaxX) + 1)]
     #print("minX: %i -  maxX: %i" % (minX, maxX))
     for pos in positions:
+        removals = 0
         p, d0 = pos
         #print("Comparing to %s with d0 = %i" % (str(p[0]), d0))
 
         for x in range(int(zMinX), int(zMaxX) + 1):
             d = manhattanDistance(p[0], (x, lookY))
-            if d > d0:
+            if d <= d0 - 1:
+                pass
+                #removals += 1
                 #print("Removing: %s (%i < %i)" % (str((x, lookY)), d, d0))
                 #print(d0)
                 #print((x, lookY))
-                freepositions[x - zMinX] = 0
             else:
+                # is invisible
+                freepositions[x - zMinX] += 1 
+                if freepositions[x - zMinX] == len(positions): 
+                    # it's invisible to all beacons
+                    print("Hit at (%i, %i)" % ((x + zMinX) * zoomlevel, lookY * zoomlevel))
+                    raise Exception("Found at lookY: %i" % (lookY * zoomlevel))
                 pass
                 #print("%i > %i" % (d, d0))
 
-        if sum(freepositions) > 0:
-            print("Found")
-            print("Break")
-            ## Find xPos:
-            for x in range(0, len(freepositions)):
-                if freepositions[x] > 0:
-                    print("Hit at (%i, %i)" % ((x + zMinX) * zoomlevel, lookY * zoomlevel))
-            raise Exception("Found at lookY: %i" % (lookY * zoomlevel))
-            import time 
-            time.sleep(1)
-            break
+    #    if sum(freepositions) > 0:
+    #        print("Found")
+    #        print("Break")
+    #        ## Find xPos:
+    #        #print(freepositions)
+    #        for x in range(0, len(freepositions)):
+    #            if freepositions[x] > 0:
+    #                print("Hit at (%i, %i)" % ((x + zMinX) * zoomlevel, lookY * zoomlevel))
+    #        raise Exception("Found at lookY: %i" % (lookY * zoomlevel))
+    #        import time 
+    #        time.sleep(1)
+    #        break
     
     numfree = len(freepositions) - sum(freepositions)
     if numfree > 0:
