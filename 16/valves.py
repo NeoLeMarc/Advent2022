@@ -9,6 +9,7 @@ timeLeft = 30
 position = 'AA'
 valves = {} # Position -> Flow rate, adjacent 
 
+
 for line in lines:
     sline = line.split(' ')
     position = sline[1]
@@ -23,8 +24,9 @@ for line in lines:
 #print(valves)
 curpos = 'AA'
 
-def calculateValue(seen, adjacent, timeLeft, steps, curpos):
+def calculateValue(seen, adjacent, timeLeft, steps, curpos, nextStep):
     global openValves
+
     #print(adjacent)
     if timeLeft == 0:
         print("No time left")
@@ -34,19 +36,25 @@ def calculateValue(seen, adjacent, timeLeft, steps, curpos):
     ret = [] # valvename, value, timeLeft if going there
     stop = False
     for adj in adjacent:
+        if nextStep == None:
+            nextStepS = adj 
+        else:
+            nextStepS = nextStep
+ 
         if adj in seen:
             stop = True
             # Moving full circle
             print("Circle")
         else:
             seen.append(adj)
-            print("Adding: %s" % adj)
+            #print("Adding: %s" % adj)
             if adj not in openValves: 
-                value = valves[adj][0] - steps + (valves[adj][0] * (timeLeft - steps - 2)) # opening a valve takes one minute
+                value = valves[adj][0] * (timeLeft - steps - 2) # opening a valve takes one minute
             else:
                 value = 0
-            ret.append((adj, value, (timeLeft - 1), curpos))
-            ret.extend(calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1, steps + 1, adj))
+            downstreamValues = calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1, steps + 1, curpos, nextStepS)
+            ret.append((adj, value + sum([i[1] for i in downstreamValues]), (timeLeft - 1), nextStepS))
+            #ret.extend(calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1, steps + 1, curpos, nextStepS))
     return ret
 
 totalValue = 0
@@ -54,10 +62,27 @@ currentIncrement = 0
 openValves = []
 
 while timeLeft > 1:
+    # open valve 
+    print("Current position: %s" % curpos)
+    print("Value at current position: %i" % valves[curpos][0] )
+    if curpos not in openValves and valves[curpos][0] > 0:
+        currentIncrement += valves[curpos][0] 
+        # opening valve
+        openValves.append(curpos)
+
+        print("** Minute: %i" % (30 - timeLeft + 1))
+        print("opening valve %s" % (curpos))
+        print("Currently open valves: %s" % str(openValves))
+        print("TimeLeft: %i" % timeLeft)
+        print("Current increment: %i" % currentIncrement)
+        totalValue += currentIncrement
+        print("Total value: %i" % totalValue)
+        timeLeft -= 1
+ 
     mostValuableValue = -1 
     mostValuableKey = curpos 
     mostValuableTimeLeft = 0
-    ret = calculateValue([curpos], copy.copy(valves[curpos][1]), timeLeft - 1, 1, None)
+    ret = calculateValue([curpos], copy.copy(valves[curpos][1]), timeLeft - 1, 1, curpos, None)
     print(ret)
     print("--------------------------")
     print("Currently open valves: %s" % str(openValves))
@@ -75,35 +100,34 @@ while timeLeft > 1:
             mostValuableValue = r[1]
             mostValuableKey = r[0]
             mostValuableTimeLeft = r[2]
+            nextStep = r[3]
             #if mostValuableKey in openValves:
             #    raise Exception("Seen valve twice: %s" % mostValuableKey)
 
     print(mostValuableKey)
     print(mostValuableValue)
+    print(nextStep)
     print(timeLeft)
 
     # Increment for the time it takes to move to new position:
     # opening valve takes one minute
-    for i in range(timeLeft, mostValuableTimeLeft, -1):
-        timeLeft -= 1
-        print("** Walking from %s -> %s **" % (curpos, mostValuableKey))
-        print("Minute: %i" % (30 - timeLeft))
-        print("Currently open valves: %s" % str(openValves))
-        print("TimeLeft: %i" % timeLeft)
-        print("Current increment: %i" % currentIncrement)
-        totalValue += currentIncrement
-        print("Total value: %i" % totalValue)
+    # take the next step:
+    print("** Minute: %i" % (30 - timeLeft + 1))
 
-    # Now the valve is open 
-    currentIncrement += valves[mostValuableKey][0] 
-    if mostValuableValue > 0:
-        # opening valve
-        openValves.append(mostValuableKey)
-
-    curpos = mostValuableKey
-    # Just one more round
-    #timeLeft -= 1
-    #timeLeft = mostValuableTimeLeft
+    if nextStep == curpos:
+        print("Waling directly from %s -> %s" % (curpos, mostValuableKey))
+        curpos = mostValuableKey
+    else:
+        print("Walking from %s -> %s over %s **" % (curpos, mostValuableKey, nextStep))
+        curpos = nextStep
+    print("Currently open valves: %s" % str(openValves))
+    print("TimeLeft: %i" % timeLeft)
+    print("Current increment: %i" % currentIncrement)
+    totalValue += currentIncrement
+    print("Total value: %i" % totalValue)
+    timeLeft -= 1
+    
+    
     print("Time left: %i" % timeLeft)
     print("---------------------------")
 print("No time left - exiting")
