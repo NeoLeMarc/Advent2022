@@ -16,13 +16,14 @@ for line in lines:
     adjacent = []
     for adj in sadjacent:
         adjacent.append(adj.split(',')[0])
-    print(adjacent)
+    #print(adjacent)
     valves[position] = (rate, adjacent)
 
 #print(valves)
 curpos = 'AA'
 
 def calculateValue(seen, adjacent, timeLeft):
+    print(adjacent)
     if timeLeft == 0:
         print("No time left")
         # No time
@@ -32,9 +33,9 @@ def calculateValue(seen, adjacent, timeLeft):
     stop = False
     for adj in adjacent:
         if adj in seen:
+            stop = True
             # Moving full circle
             print("Circle")
-            return ret
         else:
             seen.append(adj)
             value = valves[adj][0] * timeLeft
