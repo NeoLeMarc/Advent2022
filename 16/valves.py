@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys
+import copy
 
 with open(sys.argv[1], 'r') as file:
     lines = file.read().splitlines()
@@ -22,8 +23,9 @@ for line in lines:
 #print(valves)
 curpos = 'AA'
 
-def calculateValue(seen, adjacent, timeLeft, openValves):
-    print(adjacent)
+def calculateValue(seen, adjacent, timeLeft):
+    global openValves
+    #print(adjacent)
     if timeLeft == 0:
         print("No time left")
         # No time
@@ -39,32 +41,34 @@ def calculateValue(seen, adjacent, timeLeft, openValves):
         else:
             seen.append(adj)
             if adj not in openValves: 
+                print("Adding: %s" % adj)
                 value = valves[adj][0] * timeLeft
                 ret.append((adj, value, timeLeft))
-                ret.extend(calculateValue(seen, valves[adj][1], timeLeft - 1, openValves))
+            ret.extend(calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1))
     return ret
 
 totalValue = 0
 currentIncrement = 0
 openValves = []
 
-while timeLeft > 0:
+while timeLeft > 1:
     mostValuableValue = 0
     mostValuableKey = curpos 
     mostValuableTimeLeft = 0
-    ret = calculateValue([curpos], valves[curpos][1], timeLeft - 1, openValves)
+    ret = calculateValue([curpos], copy.copy(valves[curpos][1]), timeLeft - 1)
     print("--------------------------")
-    print(ret)
     print("Currently open valves: %s" % str(openValves))
     print("Current increment: %i" % currentIncrement)
     print("Time left: %i" % timeLeft)
 
     # get most valuable block
     for r in ret:
-        if r[1] > mostValuableValue:
+        if r[1] > mostValuableValue and r[0] not in openValves:
             mostValuableValue = r[1]
             mostValuableKey = r[0]
             mostValuableTimeLeft = r[2]
+            if mostValuableKey in openValves:
+                raise Exception("Seen valve twice: %s" % mostValuableKey)
 
     print(mostValuableKey)
     print(mostValuableValue)
@@ -77,10 +81,19 @@ while timeLeft > 0:
 
     # Increment for the time it takes to move to new position:
     for i in range(timeLeft - 1, mostValuableTimeLeft, -1):
+        timeLeft -= 1
+        print("** Walking **")
+        print("Currently open valves: %s" % str(openValves))
+        print("TimeLeft: %i" % timeLeft)
+        print("Current increment: %i" % currentIncrement)
         totalValue += currentIncrement
+        print("Total value: %i" % totalValue)
 
-
-    timeLeft = mostValuableTimeLeft
-    totalValue += currentIncrement
-print("No time left")
+    if mostValuableTimeLeft == 0:
+        # Just one more round
+        timeLeft -= 1
+    #timeLeft = mostValuableTimeLeft
+    print("Time left: %i" % timeLeft)
+    print("---------------------------")
+print("No time left - exiting")
 print(totalValue)
