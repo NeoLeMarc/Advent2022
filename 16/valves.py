@@ -23,7 +23,7 @@ for line in lines:
 #print(valves)
 curpos = 'AA'
 
-def calculateValue(seen, adjacent, timeLeft):
+def calculateValue(seen, adjacent, timeLeft, steps):
     global openValves
     #print(adjacent)
     if timeLeft == 0:
@@ -42,11 +42,12 @@ def calculateValue(seen, adjacent, timeLeft):
             seen.append(adj)
             print("Adding: %s" % adj)
             if adj not in openValves: 
-                value = valves[adj][0] * timeLeft
+                value = valves[adj][0] - steps + (valves[adj][0] * (timeLeft - steps - 2)) # opening a valve takes one minute
             else:
                 value = 0
-            ret.append((adj, value, timeLeft))
-            #ret.extend(calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1))
+            ret.append((adj, value, (timeLeft - 1)))
+            if (steps < 2):
+                ret.extend(calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1, steps + 1))
     return ret
 
 totalValue = 0
@@ -57,7 +58,7 @@ while timeLeft > 1:
     mostValuableValue = -1 
     mostValuableKey = curpos 
     mostValuableTimeLeft = 0
-    ret = calculateValue([curpos], copy.copy(valves[curpos][1]), timeLeft - 1)
+    ret = calculateValue([curpos], copy.copy(valves[curpos][1]), timeLeft - 1, 0)
     print(ret)
     print("--------------------------")
     print("Currently open valves: %s" % str(openValves))
@@ -66,41 +67,43 @@ while timeLeft > 1:
 
     # get most valuable block
     # pick any path at first to not get stuck
-    mostValuableValue = ret[0][1]
-    mostValuableKey = ret[0][0]
-    mostValuableTimeLeft = ret[0][2]
-
+    ##mostValuableValue = ret[0][1]
+    ##mostValuableKey = ret[0][0]
+    ##mostValuableTimeLeft = ret[0][2]
+    print(ret)
     for r in ret:
         if r[1] > mostValuableValue:
             mostValuableValue = r[1]
             mostValuableKey = r[0]
             mostValuableTimeLeft = r[2]
-            if mostValuableKey in openValves:
-                raise Exception("Seen valve twice: %s" % mostValuableKey)
+            #if mostValuableKey in openValves:
+            #    raise Exception("Seen valve twice: %s" % mostValuableKey)
 
     print(mostValuableKey)
     print(mostValuableValue)
     print(timeLeft)
-
-    # Go down the most valuable path
-    currentIncrement += valves[mostValuableKey][0] 
-    if mostValuableValue > 0:
-        openValves.append(curpos)
 
     # Increment for the time it takes to move to new position:
     # opening valve takes one minute
     for i in range(timeLeft, mostValuableTimeLeft, -1):
         timeLeft -= 1
         print("** Walking from %s -> %s **" % (curpos, mostValuableKey))
+        print("Minute: %i" % (30 - timeLeft))
         print("Currently open valves: %s" % str(openValves))
         print("TimeLeft: %i" % timeLeft)
         print("Current increment: %i" % currentIncrement)
         totalValue += currentIncrement
         print("Total value: %i" % totalValue)
 
+    # Now the valve is open 
+    currentIncrement += valves[mostValuableKey][0] 
+    if mostValuableValue > 0:
+        # opening valve
+        openValves.append(mostValuableKey)
+
     curpos = mostValuableKey
     # Just one more round
-    timeLeft -= 1
+    #timeLeft -= 1
     #timeLeft = mostValuableTimeLeft
     print("Time left: %i" % timeLeft)
     print("---------------------------")
