@@ -23,7 +23,7 @@ for line in lines:
 #print(valves)
 curpos = 'AA'
 
-def calculateValue(seen, adjacent, timeLeft, steps):
+def calculateValue(seen, adjacent, timeLeft, steps, curpos):
     global openValves
     #print(adjacent)
     if timeLeft == 0:
@@ -45,9 +45,8 @@ def calculateValue(seen, adjacent, timeLeft, steps):
                 value = valves[adj][0] - steps + (valves[adj][0] * (timeLeft - steps - 2)) # opening a valve takes one minute
             else:
                 value = 0
-            ret.append((adj, value, (timeLeft - 1)))
-            if (steps < 2):
-                ret.extend(calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1, steps + 1))
+            ret.append((adj, value, (timeLeft - 1), curpos))
+            ret.extend(calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1, steps + 1, adj))
     return ret
 
 totalValue = 0
@@ -58,7 +57,7 @@ while timeLeft > 1:
     mostValuableValue = -1 
     mostValuableKey = curpos 
     mostValuableTimeLeft = 0
-    ret = calculateValue([curpos], copy.copy(valves[curpos][1]), timeLeft - 1, 0)
+    ret = calculateValue([curpos], copy.copy(valves[curpos][1]), timeLeft - 1, 1, None)
     print(ret)
     print("--------------------------")
     print("Currently open valves: %s" % str(openValves))
