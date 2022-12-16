@@ -57,15 +57,15 @@ class Crate(object):
 
 
         # Unlink from next and previous container 
-        if self.nextCrate != None:
-            self.nextCrate.previousCrate = self.previousCrate 
-
-        if self.previousCrate:
-            self.previousCrate.nextCrate = self.nextCrate
-
-        else:
-            # Link next container to top of list - but only if we were the top container
-            topCrates[oldpos] = self.nextCrate
+#        if self.nextCrate != None:
+#            self.nextCrate.previousCrate = self.previousCrate 
+#
+#        if self.previousCrate:
+#            self.previousCrate.setNextCrate(self.nextCrate)
+#
+#        else:
+#            # Link next container to top of list - but only if we were the top container
+#            topCrates[oldpos] = self.nextCrate
         
         # Now we are at the top
         self.previousCrate = None
@@ -73,7 +73,7 @@ class Crate(object):
         # Now link the target top crate as next container
         print("Target: " + str(target))
         oldnext = self.nextCrate
-        oldnext.nextCrate = self.nextCrate # Maybe bufix
+        #oldnext.setNextCrate(self.nextCrate) # Maybe bufix
         self.nextCrate = topCrates[target]
 
         # Noe let us be the top container of the target
@@ -90,15 +90,15 @@ class Crate(object):
         if not topCrates[oldpos]:
             topCrates[oldpos] = Crate(oldpos, "", None, None)
 
-        print("End:")
-        print(self)
-        pprint(self.__dict__)
-        print("Old next:")
-        if oldnext != None:
-            pprint(oldnext.__dict__)
-        else:
-            print("None")
-        pprint(topCrates)
+#        print("End:")
+#        print(self)
+#        pprint(self.__dict__)
+#        print("Old next:")
+#        if oldnext != None:
+#            pprint(oldnext.__dict__)
+#        else:
+#            print("None")
+#        pprint(topCrates)
 
     def getValues(self, seen):
         #if self.previousCrate == None:
@@ -112,17 +112,9 @@ class Crate(object):
         #    pprint(self.__dict__)
 
         if self in seen:
-            print("Circle information")
-            print(seen)
-            pprint(topCrates)
-            print("Culprit:")
-            print(seen[-1])
-            pprint(seen[-1].__dict__)
-            print("Affected:")
-            print(self)
-            pprint(self.__dict__)
             sys.stdout.flush()
-            raise Exception("Error: circle found")
+            return ""
+            #raise Exception("Error: circle found")
 
         seen.append(self)
 
@@ -136,6 +128,11 @@ class Crate(object):
             values += self.nextCrate.getValues(seen)
         #print("<-------")
         return values
+
+    def setNextCrate(self, nextCrate):
+        if nextCrate == self:
+            raise Exception("Link to self")
+        self.nextCrate = nextCrate
 
 def printCrates():
     i = 1
