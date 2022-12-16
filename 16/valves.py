@@ -23,38 +23,55 @@ for line in lines:
 
 #print(valves)
 curpos = 'AA'
+cache = {}
+
+def stringify(seen, adjacent, timeLeft, steps, curpos, nextStep):
+    return str(seen) + "-" + str(adjacent) + "-" + str(timeLeft) + " - " + str(steps) + "-" + str(curpos) + " " + str(nextStep)
 
 def calculateValue(seen, adjacent, timeLeft, steps, curpos, nextStep):
     global openValves
+    global cache
+
+    # dynamic programming
+    if stringify(seen, adjacent, timeLeft, steps, curpos, nextStep) in cache:
+        print("Cache hit!")
+        print(stringify(seen, adjacent, timeLeft, steps, curpos, nextStep))
+        return cache[stringify(seen, adjacent, timeLeft, steps, curpos, nextStep)]
+                                                                                                                    
 
     #print(adjacent)
     if timeLeft == 0:
-        print("No time left")
+        #print("No time left")
         # No time
         return []
+    else:
+        pass
+#        print(timeLeft)
 
     ret = [] # valvename, value, timeLeft if going there
     stop = False
+    value = 0
     for adj in adjacent:
         if nextStep == None:
             nextStepS = adj 
+            print(adj)
         else:
             nextStepS = nextStep
  
-        if adj in seen:
-            stop = True
-            # Moving full circle
-            print("Circle")
-        else:
+        if adj not in seen:
+            # open this valve only if it is not already open
             seen.append(adj)
             #print("Adding: %s" % adj)
             if adj not in openValves: 
                 value = valves[adj][0] * (timeLeft - steps - 2) # opening a valve takes one minute
             else:
                 value = 0
-            downstreamValues = calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1, steps + 1, curpos, nextStepS)
-            ret.append((adj, value + sum([i[1] for i in downstreamValues]), (timeLeft - 1), nextStepS))
-            #ret.extend(calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1, steps + 1, curpos, nextStepS))
+
+        downstreamValues = calculateValue(copy.copy(seen), copy.copy(valves[adj][1]), timeLeft - 1, steps + 1, curpos, nextStepS)
+        ret.append((adj, value + sum([i[1] for i in downstreamValues]), (timeLeft - 1), nextStepS))
+        #ret.extend(calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1, steps + 1, curpos, nextStepS))
+
+    cache[stringify(seen, adjacent, timeLeft, steps, curpos, nextStep)] = ret
     return ret
 
 totalValue = 0
