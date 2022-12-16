@@ -26,16 +26,18 @@ curpos = 'AA'
 cache = {}
 
 def stringify(seen, adjacent, timeLeft, steps, curpos, nextStep):
-    return str(seen) + "-" + str(adjacent) + "-" + str(timeLeft) + " - " + str(steps) + "-" + str(curpos) + " " + str(nextStep)
+    return str(seen) + "-" + str(adjacent) + "-" + str(timeLeft) + "-" + str(steps) + "-" + str(curpos) + "-" + str(nextStep)
 
-def calculateValue(seen, adjacent, timeLeft, steps, curpos, nextStep):
+def calculateValue(seen, adjacent, timeLeft, steps, curpos, nextStep, trackback):
     global openValves
     global cache
 
     # dynamic programming
     if stringify(seen, adjacent, timeLeft, steps, curpos, nextStep) in cache:
-        print("Cache hit!")
-        print(stringify(seen, adjacent, timeLeft, steps, curpos, nextStep))
+        #print("Cache hit!")
+        if steps <= 2:
+            print(stringify(seen, adjacent, timeLeft, steps, curpos, nextStep))
+            print(cache[stringify(seen, adjacent, timeLeft, steps, curpos, nextStep)])
         return cache[stringify(seen, adjacent, timeLeft, steps, curpos, nextStep)]
                                                                                                                     
 
@@ -62,16 +64,18 @@ def calculateValue(seen, adjacent, timeLeft, steps, curpos, nextStep):
             # open this valve only if it is not already open
             seen.append(adj)
             #print("Adding: %s" % adj)
-            if adj not in openValves: 
-                value = valves[adj][0] * (timeLeft - steps - 2) # opening a valve takes one minute
+            if adj not in openValves and timeLeft > 0: 
+                value = valves[adj][0] * timeLeft # opening a valve takes one minute
             else:
                 value = 0
 
-        downstreamValues = calculateValue(copy.copy(seen), copy.copy(valves[adj][1]), timeLeft - 1, steps + 1, curpos, nextStepS)
-        ret.append((adj, value + sum([i[1] for i in downstreamValues]), (timeLeft - 1), nextStepS))
+        downstreamValues = calculateValue(copy.copy(seen), copy.copy(valves[adj][1]), timeLeft - 1, steps + 1, curpos, nextStepS, trackback + "->" + adj)
+        ret.append((adj, value + sum([i[1] for i in downstreamValues]), (timeLeft - 1), nextStepS, trackback))
         #ret.extend(calculateValue(seen, copy.copy(valves[adj][1]), timeLeft - 1, steps + 1, curpos, nextStepS))
 
     cache[stringify(seen, adjacent, timeLeft, steps, curpos, nextStep)] = ret
+    if steps <= 3:
+        print("Trackback: %s - %s" % (trackback, str(ret)))
     return ret
 
 totalValue = 0
@@ -99,7 +103,7 @@ while timeLeft > 1:
     mostValuableValue = -1 
     mostValuableKey = curpos 
     mostValuableTimeLeft = 0
-    ret = calculateValue([curpos], copy.copy(valves[curpos][1]), timeLeft - 1, 1, curpos, None)
+    ret = calculateValue([curpos], copy.copy(valves[curpos][1]), timeLeft - 1, 1, curpos, None, curpos)
     print(ret)
     print("--------------------------")
     print("Currently open valves: %s" % str(openValves))
