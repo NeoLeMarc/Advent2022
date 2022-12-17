@@ -177,7 +177,7 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
 
-        screen.fill(WHITE)
+    screen.fill(WHITE)
 
     for i in range(game.height):
         for j in range(game.width):
