@@ -22,6 +22,7 @@ above = 3
 class Figure:
     x = 0
     y = 0
+    nextFigure = 0
 
     figures = [
                [4, 5, 6, 7],
@@ -33,9 +34,11 @@ class Figure:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.type = random.randint(0, len(self.figures) - 1)
+        self.type = Figure.nextFigure
         self.color = random.randint(1, len(colors) - 1)
         self.rotation = 0
+        Figure.nextFigure += 1 # rotate through figures
+        Figure.nextFigure = Figure.nextFigure % len(Figure.figures)
 
     def image(self):
         return self.figures[self.type]
