@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import pygame
+import pygame, random
 
 
 colors =  [
@@ -30,10 +30,12 @@ class Figure:
                [0, 1, 4, 5]
              ]
 
-    def __init__(self, x, y, ftype):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.type = ftype
+        self.type = random.randint(0, len(self.figures) - 1)
+        self.color = random.randint(1, len(colors) - 1)
+        self.rotation = 0
 
     def image(self):
         return self.figures[self.type]
@@ -65,7 +67,7 @@ class Tetris:
 
     def new_figure(self):
         ## need to edit here
-        self.figure = Figure(3, 0, 0) # at least need to edit type
+        self.figure = Figure(3, 0) # at least need to edit type
 
     def intersects(self):
         intersection = False
@@ -83,7 +85,7 @@ class Tetris:
     def break_lines(self):
         lines = 0
         for i in range(1, self.height):
-            zeros = 0
+            zeroes = 0
             for j in range(self.width):
                 if self.field[i][j] == 0:
                     zeroes += 1
@@ -141,7 +143,7 @@ while not done:
     if counter > 100000:
         counter = 0
 
-    if counter % (fps) == 0:
+    if counter % (fps // 8) == 0:
         if game.state == "start":
             game.go_down()
 
@@ -155,7 +157,7 @@ while not done:
         for j in range(game.width):
             pygame.draw.rect(screen, GRAY, [game.x + game.zoom * j, game.y + game.zoom * i, game.zoom, game.zoom], 1)
             if game.field[i][j] > 0:
-                pygame.draw.rect(screen, colors[game.filed[i][j]],
+                pygame.draw.rect(screen, colors[game.field[i][j]],
                                  [game.x + game.zoom * j + 1, game.y + game.zoom * i + 1, game.zoom - 2, game.zoom - 1])
 
     if game.figure is not None:
