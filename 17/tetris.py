@@ -21,7 +21,7 @@ above = 3
 # https://levelup.gitconnected.com/writing-tetris-in-python-2a16bddb5318
 
 ## New figure is inserted two columns from the left wall and bottom is three units above the highest rock
-lastYPos = height
+lastYPos = height - 5 
 
 class Figure:
     x = 0
@@ -29,10 +29,10 @@ class Figure:
     nextFigure = 0
 
     figures = [
-               [4, 5, 6, 7],
-               [1, 4, 5, 6, 9],
-               [1, 5, 9, 8],
-               [0, 1, 4, 5]
+               [[12, 13, 14, 15],  -3],
+               [[5, 8, 9, 10, 13], -1],
+               [[5, 9, 13, 12],  -1],
+               [[8, 9, 12, 13], -2],
              ]
 
     def __init__(self, x, y):
@@ -43,9 +43,10 @@ class Figure:
         self.rotation = 0
         Figure.nextFigure += 1 # rotate through figures
         Figure.nextFigure = Figure.nextFigure % len(Figure.figures)
+        self.offset = self.figures[self.type][1]
 
     def image(self):
-        return self.figures[self.type]
+        return self.figures[self.type][0]
 
 class Tetris:
     state = "start"
@@ -75,7 +76,7 @@ class Tetris:
     def new_figure(self):
         global lastYPos
         ## need to edit here
-        self.figure = Figure(2, lastYPos - 5) # at least need to edit type
+        self.figure = Figure(2, lastYPos - 2) # at least need to edit type
 
     def intersects(self):
         intersection = False
@@ -117,10 +118,10 @@ class Tetris:
         global lastYPos
         for i in range(4):
             for j in range(4):
-                if i * 4 +j in self.figure.image():
+                if i * 4 + j in self.figure.image():
                     self.field[i + self.figure.y][j + self.figure.x] = self.figure.color
-                    # remember last y pos to insert at right point
-                    lastYPos = self.figure.y
+        # remember last y pos to insert at right point
+        lastYPos = self.figure.y - self.figure.offset - 5 # figure offset + move to lower left coord
         #self.break_lines()
         self.new_figure()
         if self.intersects():
@@ -179,8 +180,8 @@ while not done:
             else:
                 raise Exception("Unexpected movement")
 
-            game.go_down()
 
+            game.go_down()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
@@ -204,7 +205,7 @@ while not done:
                                       game.y + game.zoom * (i + game.figure.y) + 1,
                                       game.zoom - 2, game.zoom - 2])
 
-        font = pygame.font.SysFont('Calibri', 25, True, False)
+    font = pygame.font.SysFont('Calibri', 25, True, False)
     font1 = pygame.font.SysFont('Calibri', 65, True, False)
     text = font.render("Score: " + str(game.score), True, BLACK)
     text_game_over = font1.render("Game Over", True, (255, 125, 0))
