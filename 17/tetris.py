@@ -12,12 +12,16 @@ colors =  [
     (180, 34, 122),
 ]
 
+height = 20
 width = 7
 injectionPoint = 1
 above = 3
 
 # Basic idea: 
 # https://levelup.gitconnected.com/writing-tetris-in-python-2a16bddb5318
+
+## New figure is inserted two columns from the left wall and bottom is three units above the highest rock
+lastYPos = height
 
 class Figure:
     x = 0
@@ -69,8 +73,9 @@ class Tetris:
             self.field.append(new_line)
 
     def new_figure(self):
+        global lastYPos
         ## need to edit here
-        self.figure = Figure(3, 0) # at least need to edit type
+        self.figure = Figure(2, lastYPos - 5) # at least need to edit type
 
     def intersects(self):
         intersection = False
@@ -109,11 +114,14 @@ class Tetris:
 
 
     def freeze(self):
+        global lastYPos
         for i in range(4):
             for j in range(4):
                 if i * 4 +j in self.figure.image():
                     self.field[i + self.figure.y][j + self.figure.x] = self.figure.color
-        self.break_lines()
+                    # remember last y pos to insert at right point
+                    lastYPos = self.figure.y
+        #self.break_lines()
         self.new_figure()
         if self.intersects():
             self.state = "gameover"
@@ -141,7 +149,7 @@ pygame.display.set_caption("Elftris")
 done = False
 clock = pygame.time.Clock()
 fps = 25
-game = Tetris(20, 10)
+game = Tetris(height, width)
 counter = 0
 
 # Movement code - needs to be read from file later
@@ -156,7 +164,7 @@ while not done:
     if counter > 100000:
         counter = 0
 
-    if counter % (fps // 4) == 0:
+    if counter % (fps ) == 0:
         if game.state == "start":
             movement = movementCode[movepos]
             movepos += 1
