@@ -117,6 +117,12 @@ class Tetris:
         self.new_figure()
         if self.intersects():
             self.state = "gameover"
+
+    def go_side(self, dx):
+        old_x = self.figure.x
+        self.figure.x += dx
+        if self.intersects():
+            self.figure.x = old_x
         
 
 
@@ -138,6 +144,10 @@ fps = 25
 game = Tetris(20, 10)
 counter = 0
 
+# Movement code - needs to be read from file later
+movepos = 0
+movementCode = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
+
 while not done:
     if game.figure is None:
         game.new_figure()
@@ -146,15 +156,28 @@ while not done:
     if counter > 100000:
         counter = 0
 
-    if counter % (fps // 8) == 0:
+    if counter % (fps // 4) == 0:
         if game.state == "start":
+            movement = movementCode[movepos]
+            movepos += 1
+            movepos = movepos % len(movementCode) 
+            print(movepos)
+            print(movement)
+
+            if movement == "<":
+                game.go_side(-1)
+            elif movement == ">":
+                game.go_side(1)
+            else:
+                raise Exception("Unexpected movement")
+
             game.go_down()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
 
-    screen.fill(WHITE)
+        screen.fill(WHITE)
 
     for i in range(game.height):
         for j in range(game.width):
@@ -165,14 +188,15 @@ while not done:
 
     if game.figure is not None:
         for i in range(4):
-            p = i * 4 + j
-            if p in game.figure.image():
-                pygame.draw.rect(screen, colors[game.figure.color],
-                                 [game.x + game.zoom * (j + game.figure.x) + 1,
-                                  game.y + game.zoom * (i + game.figure.y) + 1,
-                                  game.zoom - 2, game.zoom - 2])
+            for j in range(4):
+                p = i * 4 + j
+                if p in game.figure.image():
+                    pygame.draw.rect(screen, colors[game.figure.color],
+                                     [game.x + game.zoom * (j + game.figure.x) + 1,
+                                      game.y + game.zoom * (i + game.figure.y) + 1,
+                                      game.zoom - 2, game.zoom - 2])
 
-    font = pygame.font.SysFont('Calibri', 25, True, False)
+        font = pygame.font.SysFont('Calibri', 25, True, False)
     font1 = pygame.font.SysFont('Calibri', 65, True, False)
     text = font.render("Score: " + str(game.score), True, BLACK)
     text_game_over = font1.render("Game Over", True, (255, 125, 0))
@@ -181,7 +205,7 @@ while not done:
     screen.blit(text, [0, 0])
     if game.state == "gameover":
         screen.blit(text_game_over, [20, 200])
-        screen.blit(text_game_over1, [25, 2265])
+        screen.blit(text_game_over1, [25, 265])
 
     pygame.display.flip()
     clock.tick(fps)
